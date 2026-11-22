@@ -26,7 +26,7 @@ A code-based private messaging app. People exchange temporary five-character cod
 5. Start the app with npm start.
 6. Open localhost on port 3000 in your browser.
 
-The SQLite database and uploaded files are stored under DATA_DIR. The default local folder is ./data.
+The SQLite database and uploaded files are stored under DATA_DIR. The default local folder is ./data. Messages and attachments are stored on the server; this version does not use end-to-end encryption, so the service operator may be able to access stored content.
 
 ## How connections work
 
@@ -42,7 +42,7 @@ Codes are for finding and confirming a connection. They are not account password
 
 The server accepts a limited set of common image, PDF, text/CSV, and Office document types. Executables, scripts, and archive files are not accepted. Downloads are served as attachments and are only available to participants in that connected conversation.
 
-This first version does not include a malware-scanning service. Do not open unexpected files, even if they came from someone you know. Before opening the service to the public, add malware scanning, email verification, abuse-review procedures, backups, and monitoring.
+This first version does not include a malware-scanning service or an administrator report-review dashboard. Reports are saved in the database but are not automatically reviewed. Do not open unexpected files, even if they came from someone you know. Before opening the service to the public, add malware scanning, email verification, a moderation process, backups, and monitoring.
 
 ## Deploy
 
