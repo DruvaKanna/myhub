@@ -180,7 +180,7 @@ function setupSocket(){
     if(state.activeUser&&state.activeUser.id===other)addMessageToDom(message,true);
     loadChats().catch(()=>{});
   });
-  state.socket.on("connections-updated",()=>{loadConnections().catch(()=>{});loadChats().catch(()=>{});});
+  state.socket.on("connections-updated",()=>{refreshMe().catch(()=>{});loadConnections().catch(()=>{});loadChats().catch(()=>{});});
 }
 function closeMobileSidebar(){$(".sidebar").classList.remove("open");}
 function bindEvents(){
