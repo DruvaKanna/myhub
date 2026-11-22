@@ -33,7 +33,7 @@
         <button id="auth-submit" class="button button-primary button-wide" type="submit">Sign in <span aria-hidden="true">→</span></button>
       </form>
       <p class="auth-switch"><span id="auth-switch-copy">New to Chat Chat?</span> <button id="auth-switch" class="text-button" type="button">Create an account</button></p>
-      <p class="privacy-note"><span class="lock-icon">▣</span> Your messages and files are only available to connected chat participants.</p>
+      <p class="privacy-note"><span class="lock-icon">▣</span> Only connected accounts can open chats in this app. This version is not end-to-end encrypted.</p>
     </section>
   </main>
 
@@ -74,7 +74,7 @@
 
       <section id="chat-view" class="chat-view hidden">
         <header class="chat-header"><div class="chat-person"><div id="active-avatar" class="avatar">?</div><div><h2 id="active-name">Conversation</h2><p><span class="status-dot"></span> Connected privately</p></div></div><div class="chat-actions"><button id="report-person" class="icon-button" type="button" title="Report this person" aria-label="Report this person">⚑</button><button id="block-person" class="icon-button danger-icon" type="button" title="Block this person" aria-label="Block this person">⊘</button></div></header>
-        <div class="conversation-note"><span>▣</span> You are connected. Only you and this person can see this conversation.</div>
+        <div class="conversation-note"><span>▣</span> Connected accounts only · This version is not end-to-end encrypted.</div>
         <div id="message-list" class="message-list" aria-live="polite"><div class="message-date">CONVERSATION</div></div>
         <div id="drop-hint" class="drop-hint hidden">Drop files to share them</div>
         <form id="composer" class="composer"><textarea id="message-input" rows="1" maxlength="10000" placeholder="Write a message..." aria-label="Write a message"></textarea><div class="composer-bottom"><div class="composer-tools"><label class="attach-button" for="file-input" title="Attach files"><span>＋</span> <span>Attach files</span></label><input id="file-input" type="file" multiple accept=".png,.jpg,.jpeg,.gif,.webp,.pdf,.txt,.csv,.doc,.docx,.xls,.xlsx,.ppt,.pptx" hidden><span class="file-limit">Up to 5 files · 15 MB each</span><span id="selected-files" class="selected-files"></span></div><button id="send-button" class="send-button" type="submit" aria-label="Send message">Send <span>↑</span></button></div></form>
