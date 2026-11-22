@@ -264,7 +264,7 @@ app.post("/api/users/:userId/report",requireAuth,(req,res)=>{
   if(!Number.isSafeInteger(other)||other===req.user.id||!db.prepare("SELECT id FROM users WHERE id=?").get(other))return res.status(404).json({error:"User not found."});
   if(reason.length<5)return res.status(400).json({error:"Please add a little more detail to the report."});
   db.prepare("INSERT INTO reports(reporter_id,reported_id,reason,created_at) VALUES(?,?,?,?)").run(req.user.id,other,reason,Date.now());
-  res.json({ok:true,message:"Report submitted. Thank you for helping keep Chat Chat safer."});
+  res.json({ok:true,message:"Report saved. This first version stores reports but does not yet include an administrator review dashboard."});
 });
 
 app.use(express.static(path.join(__dirname,"public")));
