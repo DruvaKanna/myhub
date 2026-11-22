@@ -156,6 +156,7 @@ app.post("/api/auth/login",authLimiter,async(req,res,next)=>{
   }catch(error){next(error);}
 });
 app.post("/api/auth/logout",requireAuth,(req,res)=>{
+  db.prepare("DELETE FROM codes WHERE user_id=?").run(req.user.id);
   res.clearCookie(COOKIE_NAME,{httpOnly:true,secure:process.env.NODE_ENV==="production",sameSite:"lax",path:"/"});
   res.json({ok:true});
 });
@@ -178,11 +179,13 @@ app.post("/api/connections/invite",requireAuth,actionLimiter,(req,res)=>{
   if(target===req.user.id)return res.status(400).json({error:"That is your own code."});
   if(isBlocked(req.user.id,target))return res.status(403).json({error:"This connection is not available."});
   if(isConnected(req.user.id,target))return res.status(409).json({error:"You are already connected."});
-  try{
-    const result=db.prepare("INSERT INTO connection_requests(requester_id,target_id,status,created_at) VALUES(?,?,'pending',?)").run(req.user.id,target,Date.now());
-    emitConnectionUpdate(target);
-    res.status(201).json({ok:true,requestId:result.lastInsertRowid,message:"Invite sent. Your friend must enter your current code to confirm."});
-  }catch(error){if(String(error.message).includes("UNIQUE"))return res.status(409).json({error:"A connection request is already waiting."});throw error;}
+  const existing=db.prepare("SELECT id,status FROM connection_requests WHERE requester_id=? AND target_id=?").get(req.user.id,target);
+  if(existing&&existing.status==="pending")return res.status(409).json({error:"A connection request is already waiting."});
+  let requestId;
+  if(existing){db.prepare("UPDATE connection_requests SET status='pending',created_at=? WHERE id=?").run(Date.now(),existing.id);requestId=existing.id;}
+  else{const result=db.prepare("INSERT INTO connection_requests(requester_id,target_id,status,created_at) VALUES(?,?,'pending',?)").run(req.user.id,target,Date.now());requestId=result.lastInsertRowid;}
+  emitConnectionUpdate(target);
+  res.status(201).json({ok:true,requestId:requestId,message:"Invite sent. Your friend must enter your current code to confirm."});
 });
 app.post("/api/connections/confirm",requireAuth,actionLimiter,(req,res)=>{
   const requestId=Number(req.body.requestId),code=String(req.body.code||"").trim().toUpperCase();
@@ -226,7 +229,7 @@ app.post("/api/chats/:userId/messages",requireAuth,chatGuard,actionLimiter,(req,
   const result=db.prepare("INSERT INTO messages(sender_id,recipient_id,body,created_at) VALUES(?,?,?,?)").run(req.user.id,req.otherUserId,body,Date.now());
   const message=getMessage(result.lastInsertRowid);emitMessage(message);res.status(201).json({message});
 });
-app.post("/api/chats/:userId/files",requireAuth,chatGuard,(req,res,next)=>{
+app.post("/api/chats/:userId/files",requireAuth,chatGuard,actionLimiter,(req,res,next)=>{
   upload.array("files",5)(req,res,error=>{
     if(error)return next(error);
     try{
