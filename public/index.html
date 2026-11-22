@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a1426">
+  <meta name="description" content="Chat Chat — connect by code, then message and share files.">
+  <title>Chat Chat — Connect by code</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/socket.io/socket.io.js" defer></script>
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+  <main id="auth-screen" class="auth-screen">
+    <section class="auth-intro">
+      <a class="brand brand-large" href="/"><span class="brand-mark"><span></span><span></span><span></span></span><span>chat chat<span class="brand-dot">.</span></span></a>
+      <div class="intro-copy">
+        <p class="eyebrow">A LITTLE MORE CONNECTED</p>
+        <h1>Meet by code.<br><span>Keep the conversation.</span></h1>
+        <p class="intro-description">Exchange a short code with someone you know, confirm the connection, and keep chatting with messages, links, and shared files.</p>
+        <div class="feature-pills"><span><i class="tiny-dot"></i> Text-first</span><span><i class="tiny-dot"></i> File sharing</span><span><i class="tiny-dot"></i> No calls</span></div>
+      </div>
+      <p class="intro-footnote">Chat with people you know and trust. A code connects accounts; it does not verify someone's real-world identity.</p>
+    </section>
+    <section class="auth-card">
+      <div class="auth-card-heading"><span class="mini-label">WELCOME TO CHAT CHAT</span><h2 id="auth-title">Sign in</h2><p id="auth-subtitle">Pick up where your conversations left off.</p></div>
+      <form id="auth-form" novalidate>
+        <label id="username-field" class="field hidden"><span>Username</span><input id="auth-username" name="username" type="text" minlength="2" maxlength="24" autocomplete="username" placeholder="e.g. skywalker"></label>
+        <label class="field"><span>Email</span><input id="auth-email" name="email" type="email" maxlength="254" autocomplete="email" placeholder="you@example.com" required></label>
+        <label class="field"><span>Password</span><input id="auth-password" name="password" type="password" minlength="10" maxlength="72" autocomplete="current-password" placeholder="At least 10 characters" required><small>Use a password you do not use on another site.</small></label>
+        <p id="auth-error" class="form-error" role="alert"></p>
+        <button id="auth-submit" class="button button-primary button-wide" type="submit">Sign in <span aria-hidden="true">→</span></button>
+      </form>
+      <p class="auth-switch"><span id="auth-switch-copy">New to Chat Chat?</span> <button id="auth-switch" class="text-button" type="button">Create an account</button></p>
+      <p class="privacy-note"><span class="lock-icon">▣</span> Your messages and files are only available to connected chat participants.</p>
+    </section>
+  </main>
+
+  <main id="app-screen" class="app-screen hidden">
+    <aside class="sidebar">
+      <div class="sidebar-top"><a class="brand" href="/" aria-label="Chat Chat home"><span class="brand-mark"><span></span><span></span><span></span></span><span>chat chat<span class="brand-dot">.</span></span></a><button id="mobile-close" class="icon-button mobile-close" type="button" aria-label="Close menu">×</button></div>
+      <div class="profile-strip"><div id="profile-avatar" class="avatar avatar-you">?</div><div class="profile-info"><strong id="profile-name">Your account</strong><span>Personal space</span></div><button id="logout-button" class="icon-button" type="button" title="Sign out" aria-label="Sign out">↗</button></div>
+
+      <section class="code-card">
+        <div class="code-card-top"><span class="eyebrow">YOUR CONNECTION CODE</span><span class="live-indicator">LIVE</span></div>
+        <div class="code-row"><strong id="my-code">·····</strong><button id="copy-code" class="copy-button" type="button" aria-label="Copy code" title="Copy code">▢</button></div>
+        <div class="code-footer"><span id="code-expiry">Expires in 10 minutes</span><button id="new-code" class="text-button small" type="button">New code ↻</button></div>
+        <p>Share this code with someone you know in person.</p>
+      </section>
+
+      <div class="connect-box">
+        <div class="section-heading"><span>Connect with a person</span><span class="step-tag">01 / 02</span></div>
+        <p>Enter their five-character code. They will confirm by entering your current code.</p>
+        <form id="invite-form" class="invite-form"><input id="invite-code" type="text" maxlength="5" minlength="5" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="A B 4 K 9" aria-label="Friend's five-character code"><button type="submit" aria-label="Send connection request">→</button></form>
+        <p id="invite-status" class="inline-status" role="status"></p>
+      </div>
+
+      <div class="sidebar-tabs" role="tablist" aria-label="Sidebar sections"><button class="sidebar-tab active" data-tab="chats" type="button" role="tab" aria-selected="true">Chats <span id="chat-count">0</span></button><button class="sidebar-tab" data-tab="requests" type="button" role="tab" aria-selected="false">Requests <span id="request-count">0</span></button></div>
+      <section id="chats-panel" class="sidebar-panel"><div class="list-caption">YOUR CONVERSATIONS</div><div id="chat-list" class="chat-list"><div class="list-empty">Your chats will appear here.</div></div></section>
+      <section id="requests-panel" class="sidebar-panel hidden"><div class="list-caption">WAITING FOR YOU</div><div id="incoming-list" class="request-list"></div><div class="list-caption outgoing-caption">SENT BY YOU</div><div id="outgoing-list" class="request-list"></div></section>
+      <div class="sidebar-bottom"><span class="status-dot"></span> Your space, your pace <span class="version-label">v1.0</span></div>
+    </aside>
+
+    <section class="main-panel">
+      <header class="topbar"><button id="mobile-menu" class="icon-button mobile-menu" type="button" aria-label="Open menu">☰</button><div class="breadcrumb"><span>Workspace</span><b>/</b><strong id="topbar-title">Messages</strong></div><div class="topbar-right"><span class="secure-label"><span>▣</span> Private connections</span><div class="top-avatar" id="top-avatar">?</div></div></header>
+
+      <section id="empty-state" class="empty-state">
+        <div class="empty-illustration"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="chat-symbol"><span></span><span></span><span></span></div><div class="spark spark-one">✦</div><div class="spark spark-two">✧</div></div>
+        <p class="eyebrow">YOUR CHAT SPACE</p><h1>Good conversations<br><span>start with a connection.</span></h1>
+        <p>Connect with someone using your codes. Once both people confirm, your private chat appears here.</p>
+        <button id="empty-connect" class="button button-primary" type="button">Connect with a code <span>→</span></button>
+      </section>
+
+      <section id="chat-view" class="chat-view hidden">
+        <header class="chat-header"><div class="chat-person"><div id="active-avatar" class="avatar">?</div><div><h2 id="active-name">Conversation</h2><p><span class="status-dot"></span> Connected privately</p></div></div><div class="chat-actions"><button id="report-person" class="icon-button" type="button" title="Report this person" aria-label="Report this person">⚑</button><button id="block-person" class="icon-button danger-icon" type="button" title="Block this person" aria-label="Block this person">⊘</button></div></header>
+        <div class="conversation-note"><span>▣</span> You are connected. Only you and this person can see this conversation.</div>
+        <div id="message-list" class="message-list" aria-live="polite"><div class="message-date">CONVERSATION</div></div>
+        <div id="drop-hint" class="drop-hint hidden">Drop files to share them</div>
+        <form id="composer" class="composer"><textarea id="message-input" rows="1" maxlength="10000" placeholder="Write a message..." aria-label="Write a message"></textarea><div class="composer-bottom"><div class="composer-tools"><label class="attach-button" for="file-input" title="Attach files"><span>＋</span> <span>Attach files</span></label><input id="file-input" type="file" multiple accept=".png,.jpg,.jpeg,.gif,.webp,.pdf,.txt,.csv,.doc,.docx,.xls,.xlsx,.ppt,.pptx" hidden><span class="file-limit">Up to 5 files · 15 MB each</span><span id="selected-files" class="selected-files"></span></div><button id="send-button" class="send-button" type="submit" aria-label="Send message">Send <span>↑</span></button></div></form>
+      </section>
+      <footer class="main-footer"><span>Chat Chat</span><span>Text, links & files. No calls.</span></footer>
+    </section>
+  </main>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
