@@ -26,3 +26,119 @@
 :root[data-theme="white"]{color-scheme:light;--bg:#f5f7fb;--text:#182235;--muted:#59677d;--subtle:#77859a;--blue:#356ed8;--line:rgba(45,65,95,.16);--mint:#188b67}.sidebar{background:rgba(255,255,255,.96)}.main-panel{background:radial-gradient(circle at 50% 45%,rgba(38,75,126,.08),transparent 42%)}.auth-card{background:#fff}.code-card{background:linear-gradient(145deg,#edf4ff,#e3ecfa)}.profile-strip,.feature-pills span,.composer{background:rgba(235,241,250,.85)}.field input,.invite-form input,.request-card input{background:#f3f6fb;color:#182235}
 :root[data-theme="purple"]{--bg:#11091c;--text:#f8efff;--muted:#bda9cb;--subtle:#8c719b;--blue:#b77cff;--line:rgba(204,158,255,.16);--mint:#d2a5ff}
 :root[data-theme="orange"]{--bg:#1a0d05;--text:#fff4e9;--muted:#cbb09d;--subtle:#967864;--blue:#ff9c55;--line:rgba(255,174,110,.16);--mint:#ffc080}
+
+
+/* Contact names and permanent codes sit on one clean line. */
+.contact-title-row{display:flex;align-items:baseline;gap:7px;min-width:0;flex-wrap:wrap}
+.chat-item-copy .contact-title-row strong{display:inline;min-width:0}
+.contact-code{color:var(--theme-contact-code,#8fa3bf)!important;font-size:9px!important;font-weight:500!important;letter-spacing:.7px;margin:0!important;opacity:.82;white-space:nowrap}
+.header-code{font-size:10px!important;letter-spacing:1px}
+.chat-person-details{display:flex;flex-direction:column;gap:4px;min-width:0}
+.chat-heading{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.chat-heading h2{margin:0;font-size:13px}
+.chat-item-copy{gap:5px}
+.chat-item-copy .chat-preview{color:#778dab;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:9px}
+
+/* Theme-aware surfaces. */
+:root{
+  --theme-sidebar:#0a1628;
+  --theme-panel:#13243d;
+  --theme-card:#1b3354;
+  --theme-input-bg:#0b192d;
+  --theme-input-text:#f2f6ff;
+  --theme-chat-bubble:#172a46;
+  --theme-own-bubble:linear-gradient(135deg,#315e9d,#294c82);
+  --theme-composer:rgba(16,32,54,.92);
+  --theme-main:#0b1729;
+  --theme-contact-code:#9aacc5;
+  --theme-button-text:#08172d;
+}
+:root[data-theme="blue"]{
+  --theme-sidebar:#0a1628;--theme-panel:#13243d;--theme-card:#1b3354;
+  --theme-input-bg:#0b192d;--theme-input-text:#f2f6ff;--theme-chat-bubble:#172a46;
+  --theme-own-bubble:linear-gradient(135deg,#315e9d,#294c82);--theme-composer:rgba(16,32,54,.92);
+  --theme-main:#0b1729;--theme-contact-code:#9aacc5;--theme-button-text:#08172d;
+}
+:root[data-theme="green"]{
+  --theme-sidebar:#071a13;--theme-panel:#10291f;--theme-card:#153c2d;
+  --theme-input-bg:#081c14;--theme-input-text:#effff7;--theme-chat-bubble:#153b2b;
+  --theme-own-bubble:linear-gradient(135deg,#20794e,#155b3a);--theme-composer:rgba(12,39,27,.94);
+  --theme-main:#0a2118;--theme-contact-code:#9ac7ae;--theme-button-text:#062014;
+}
+:root[data-theme="red"]{
+  --theme-sidebar:#1a090c;--theme-panel:#321419;--theme-card:#4a1b24;
+  --theme-input-bg:#210d12;--theme-input-text:#fff2f3;--theme-chat-bubble:#35171d;
+  --theme-own-bubble:linear-gradient(135deg,#a83d4b,#762631);--theme-composer:rgba(43,14,20,.94);
+  --theme-main:#200d11;--theme-contact-code:#d7a3aa;--theme-button-text:#2a080d;
+}
+:root[data-theme="black"]{
+  --theme-sidebar:#050505;--theme-panel:#151515;--theme-card:#202020;
+  --theme-input-bg:#090909;--theme-input-text:#f5f5f5;--theme-chat-bubble:#202020;
+  --theme-own-bubble:linear-gradient(135deg,#454545,#292929);--theme-composer:rgba(18,18,18,.96);
+  --theme-main:#080808;--theme-contact-code:#b0b0b0;--theme-button-text:#080808;
+}
+:root[data-theme="white"]{
+  color-scheme:light;--bg:#f5f7fb;--text:#182235;--muted:#59677d;--subtle:#77859a;
+  --blue:#356ed8;--mint:#188b67;--line:rgba(45,65,95,.16);
+  --theme-sidebar:#eaf0f8;--theme-panel:#fff;--theme-card:#e7eef9;
+  --theme-input-bg:#fff;--theme-input-text:#182235;--theme-chat-bubble:#e9eef6;
+  --theme-own-bubble:linear-gradient(135deg,#d8e7ff,#c7dcff);--theme-composer:#fff;
+  --theme-main:#f8fafd;--theme-contact-code:#718198;--theme-button-text:#fff;
+}
+:root[data-theme="purple"]{
+  --theme-sidebar:#160d22;--theme-panel:#241332;--theme-card:#38204d;
+  --theme-input-bg:#180e23;--theme-input-text:#f8efff;--theme-chat-bubble:#2a183a;
+  --theme-own-bubble:linear-gradient(135deg,#7548a7,#56317f);--theme-composer:rgba(31,17,45,.95);
+  --theme-main:#160e20;--theme-contact-code:#c1a6d7;--theme-button-text:#1a0b25;
+}
+:root[data-theme="orange"]{
+  --theme-sidebar:#1b0e06;--theme-panel:#2d1a0d;--theme-card:#4a2b16;
+  --theme-input-bg:#211207;--theme-input-text:#fff4e9;--theme-chat-bubble:#3a2415;
+  --theme-own-bubble:linear-gradient(135deg,#a85c24,#854416);--theme-composer:rgba(42,25,12,.95);
+  --theme-main:#211307;--theme-contact-code:#d9b18e;--theme-button-text:#281204;
+}
+.sidebar{background:var(--theme-sidebar)}
+.main-panel{background:var(--theme-main)}
+.auth-card,.settings-modal,.warning-modal{background:var(--theme-panel)}
+.profile-strip{background:var(--theme-panel)}
+.code-card{background:linear-gradient(145deg,var(--theme-card),var(--theme-sidebar))}
+.field input,.invite-form input,.request-card input{background:var(--theme-input-bg);color:var(--theme-input-text)}
+.composer{background:var(--theme-composer)}
+.message-bubble{background:var(--theme-chat-bubble)}
+.message-row.own .message-bubble{background:var(--theme-own-bubble)}
+.button-primary,.send-button,.invite-form button{background:var(--blue);color:var(--theme-button-text)}
+.brand-mark,.chat-symbol{background:linear-gradient(145deg,var(--blue),var(--blue))}
+.theme-options button{background:var(--theme-input-bg);color:var(--text)}
+.topbar,.chat-header,.sidebar-bottom{border-color:var(--line)}
+:root[data-theme="white"] .sidebar,
+:root[data-theme="white"] .main-panel,
+:root[data-theme="white"] .auth-card,
+:root[data-theme="white"] .settings-modal,
+:root[data-theme="white"] .warning-modal,
+:root[data-theme="white"] .profile-strip,
+:root[data-theme="white"] .code-card,
+:root[data-theme="white"] .composer,
+:root[data-theme="white"] .request-card{color:var(--text)}
+:root[data-theme="white"] .sidebar{background:var(--theme-sidebar)}
+:root[data-theme="white"] .main-panel{background:var(--theme-main)}
+:root[data-theme="white"] .brand,
+:root[data-theme="white"] .profile-info strong,
+:root[data-theme="white"] .breadcrumb strong,
+:root[data-theme="white"] .chat-person h2,
+:root[data-theme="white"] .chat-item-copy strong,
+:root[data-theme="white"] .settings-header h2,
+:root[data-theme="white"] .settings-section h3{color:#182235}
+:root[data-theme="white"] .message-bubble{color:#24334a}
+:root[data-theme="white"] .message-row.own .message-bubble{color:#18365f}
+:root[data-theme="white"] .conversation-note,
+:root[data-theme="white"] .chat-person p,
+:root[data-theme="white"] .main-footer,
+:root[data-theme="white"] .list-caption,
+:root[data-theme="white"] .sidebar-bottom{color:#61728a}
+:root[data-theme="white"] .attach-button,
+:root[data-theme="white"] .file-limit{color:#52647e}
+:root[data-theme="white"] .request-card{background:#fff}
+:root[data-theme="white"] .request-card p,
+:root[data-theme="white"] .outgoing-item{color:#59677d}
+:root[data-theme="white"] .theme-options button{color:#182235}
+:root[data-theme="white"] .warning-modal p{color:#39485d}
