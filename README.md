@@ -7,14 +7,16 @@ A code-based private messaging app. People exchange temporary five-character cod
 - Responsive browser interface for desktop and mobile.
 - Account registration and sign-in with bcrypt password hashing.
 - HttpOnly signed session cookies.
-- Random five-character connection code per sign-in; codes expire after 10 minutes and can be rotated.
-- Two-way code confirmation before a connection is created.
+- A permanent random five-character connection code that stays the same across sign-ins and does not expire. It changes only from Settings.
+- Two-way code confirmation before a connection is created; the person approving the request enters a contact name for the requester.
 - Private one-to-one text conversations.
 - Clickable website links in messages.
 - Private file sharing for images, PDFs, text/CSV files, and common Office documents.
 - Up to five files per message, default limit 15 MB per file.
 - Live message and connection notifications with Socket.IO.
 - Blocking and reporting controls.
+- Settings with saved screen-color choices: blue, green, red, black, white, purple, and orange.
+- Changing a connection code shows a warning, then removes all contacts, pending requests, and the user's conversations and shared files.
 - No voice calls or video calls.
 
 ## Run locally
@@ -30,13 +32,13 @@ The SQLite database and uploaded files are stored under DATA_DIR. The default lo
 
 ## How connections work
 
-1. Sign in. Chat Chat issues a five-character code that expires after 10 minutes.
+1. Sign in. Chat Chat shows your permanent five-character connection code. It does not expire.
 2. Meet someone you already know and exchange the codes you currently see.
 3. Enter their code to send a connection request.
 4. The other person opens Requests, asks you for your current code, and enters it to confirm.
 5. Both accounts are connected and can start a private chat.
 
-Codes are for finding and confirming a connection. They are not account passwords, passkeys, or proof of someone's identity. Never share your account password or a code with someone you do not know and trust.
+Codes are for finding and confirming a connection. They are not account passwords, passkeys, or proof of someone's identity. Your code stays the same when you sign out or sign back in. To replace it, open Settings and choose Change my code; after the warning, confirming this action removes all contacts, pending requests, conversations, and shared files associated with your account. Never share your account password or a code with someone you do not know and trust.
 
 ## File-sharing safety
 
