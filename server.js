@@ -81,9 +81,12 @@ function requireAuth(req,res,next){
 }
 function randomCode(){let s="";for(let i=0;i<5;i++)s+=ALPHABET[crypto.randomInt(0,ALPHABET.length)];return s;}
 function issueCode(userId){
+  const previous=db.prepare("SELECT code FROM codes WHERE user_id=?").get(userId);
   for(let i=0;i<80;i++){
     const code=randomCode(),now=Date.now();
+    if(previous&&previous.code===code)continue;
     try{
+      // Connection codes have no expiry. Only the Settings reset action replaces one.
       db.prepare("INSERT INTO codes(user_id,code,created_at,expires_at) VALUES(?,?,?,0) ON CONFLICT(user_id) DO UPDATE SET code=excluded.code,created_at=excluded.created_at,expires_at=0").run(userId,code,now);
       return{code:code,expiresAt:null};
     }catch(error){if(!String(error.message).includes("UNIQUE"))throw error;}
@@ -242,7 +245,7 @@ app.post("/api/code/change",requireAuth,actionLimiter,(req,res,next)=>{
 });
 app.get("/api/chats",requireAuth,(req,res)=>{
   const id=req.user.id;
-  const chats=db.prepare("SELECT u.id,u.username,COALESCE(cn.name,u.username) AS display_name,co.code AS connection_code,c.created_at,(SELECT m.body FROM messages m WHERE (m.sender_id=u.id AND m.recipient_id=?) OR (m.sender_id=? AND m.recipient_id=u.id) ORDER BY m.created_at DESC,m.id DESC LIMIT 1) AS last_message,(SELECT m.created_at FROM messages m WHERE (m.sender_id=u.id AND m.recipient_id=?) OR (m.sender_id=? AND m.recipient_id=u.id) ORDER BY m.created_at DESC,m.id DESC LIMIT 1) AS last_message_at FROM connections c JOIN users u ON u.id=CASE WHEN c.user_a=? THEN c.user_b ELSE c.user_a END LEFT JOIN contact_names cn ON cn.owner_id=? AND cn.contact_id=u.id LEFT JOIN codes co ON co.user_id=u.id WHERE (c.user_a=? OR c.user_b=?) AND NOT EXISTS(SELECT 1 FROM blocks b WHERE (b.blocker_id=? AND b.blocked_id=u.id) OR (b.blocker_id=u.id AND b.blocked_id=?)) ORDER BY COALESCE(last_message_at,c.created_at) DESC").all(id,id,id,id,id,id,id,id,id,id,id);
+  const chats=db.prepare("SELECT u.id,u.username,COALESCE(cn.name,u.username) AS display_name,co.code AS connection_code,c.created_at,(SELECT m.body FROM messages m WHERE (m.sender_id=u.id AND m.recipient_id=?) OR (m.sender_id=? AND m.recipient_id=u.id) ORDER BY m.created_at DESC,m.id DESC LIMIT 1) AS last_message,(SELECT m.created_at FROM messages m WHERE (m.sender_id=u.id AND m.recipient_id=?) OR (m.sender_id=? AND m.recipient_id=u.id) ORDER BY m.created_at DESC,m.id DESC LIMIT 1) AS last_message_at FROM connections c JOIN users u ON u.id=CASE WHEN c.user_a=? THEN c.user_b ELSE c.user_a END LEFT JOIN contact_names cn ON cn.owner_id=? AND cn.contact_id=u.id LEFT JOIN codes co ON co.user_id=u.id WHERE (c.user_a=? OR c.user_b=?) AND NOT EXISTS(SELECT 1 FROM blocks b WHERE (b.blocker_id=? AND b.blocked_id=u.id) OR (b.blocker_id=u.id AND b.blocked_id=?)) ORDER BY COALESCE(last_message_at,c.created_at) DESC").all(id,id,id,id,id,id,id,id,id,id);
   res.json({chats});
 });
 app.get("/api/chats/:userId/messages",requireAuth,chatGuard,(req,res)=>{
