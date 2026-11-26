@@ -35,18 +35,11 @@ async function boot(){
 async function startApp(){
   $("#auth-screen").classList.add("hidden");$("#app-screen").classList.remove("hidden");
   $("#profile-name").textContent=state.user.username;$("#profile-avatar").textContent=initials(state.user.username);$("#top-avatar").textContent=initials(state.user.username);
-  renderCode();setupSocket();await Promise.all([loadChats(),loadConnections()]);
+  renderCode();setupSocket();await Promise.all([loadChats(),loadConnections(),loadSettings()]);
 }
-function renderCode(){$("#my-code").textContent=state.code||"·····";updateExpiry();clearInterval(state.expiryTimer);state.expiryTimer=setInterval(updateExpiry,1000);}
-function updateExpiry(){
-  const remaining=Math.max(0,Math.floor((state.codeExpiresAt-Date.now())/1000));
-  if(!remaining){$("#code-expiry").textContent="Code expired — make a new one";return;}
-  $("#code-expiry").textContent="Expires in "+Math.floor(remaining/60)+":"+String(remaining%60).padStart(2,"0");
-}
-async function rotateCode(){
-  try{const result=await api("/api/code/rotate",{method:"POST",body:{}});state.code=result.code;state.codeExpiresAt=result.expiresAt;renderCode();toast("A new connection code is ready.");}
-  catch(error){toast(error.message);}
-}
+function renderCode(){$("#my-code").textContent=state.code||"·····";$("#code-status").textContent="Your code stays active until you change it.";}
+function updateExpiry(){}
+async function rotateCode(){try{const result=await api("/api/code/change",{method:"POST",body:{}});state.code=result.code;state.codeExpiresAt=null;renderCode();toast("Your code changed and your contacts were removed.");}catch(error){toast(error.message);}}
 async function copyCode(){
   if(!state.code)return;
   try{await navigator.clipboard.writeText(state.code);toast("Code copied.");}
@@ -65,18 +58,19 @@ function renderRequests(data){
   data.incoming.forEach(request=>{
     const card=document.createElement("div");card.className="request-card";
     const title=document.createElement("strong");title.textContent=request.username+" wants to connect";
-    const hint=document.createElement("p");hint.textContent="Ask them for the five-character code they are showing now, then enter it below to confirm.";
+    const hint=document.createElement("p");hint.textContent="Enter their current code and choose the name you want to use for them in your chats.";
+    const contactName=document.createElement("input");contactName.maxLength=40;contactName.placeholder="NAME FOR THIS CONTACT";contactName.autocomplete="off";contactName.setAttribute("aria-label","Name for this contact");
     const code=document.createElement("input");code.maxLength=5;code.placeholder="THEIR CODE";code.autocomplete="off";code.setAttribute("aria-label","Their current connection code");
     code.addEventListener("input",()=>{code.value=code.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,5);});
     const actions=document.createElement("div");actions.className="request-card-actions";
     const confirm=document.createElement("button");confirm.className="confirm-request";confirm.type="button";confirm.textContent="Confirm";
     confirm.addEventListener("click",async()=>{
-      try{await api("/api/connections/confirm",{method:"POST",body:{requestId:request.request_id,code:code.value}});toast("Connected! You can start chatting.");await refreshMe();await Promise.all([loadChats(),loadConnections()]);setSidebarTab("chats");}
+      try{await api("/api/connections/confirm",{method:"POST",body:{requestId:request.request_id,code:code.value,contactName:contactName.value.trim()}});toast("Connected! You can start chatting.");await refreshMe();await Promise.all([loadChats(),loadConnections()]);setSidebarTab("chats");}
       catch(error){toast(error.message);}
     });
     const decline=document.createElement("button");decline.className="decline-request";decline.type="button";decline.textContent="Decline";
     decline.addEventListener("click",async()=>{try{await api("/api/connections/"+request.request_id+"/decline",{method:"POST",body:{}});await loadConnections();}catch(error){toast(error.message);}});
-    actions.append(confirm,decline);card.append(title,hint,code,actions);incoming.append(card);
+    actions.append(confirm,decline);card.append(title,hint,contactName,code,actions);incoming.append(card);
   });
   if(!data.outgoing.length){const empty=document.createElement("div");empty.className="list-empty";empty.textContent="No invites sent.";outgoing.append(empty);}
   else data.outgoing.forEach(request=>{const item=document.createElement("div");item.className="outgoing-item";const name=document.createElement("strong");name.textContent=request.username;const waiting=document.createElement("span");waiting.textContent="Waiting";item.append(name,waiting);outgoing.append(item);});
@@ -94,14 +88,14 @@ function renderChats(){
     const button=document.createElement("button");button.type="button";button.className="chat-item"+(state.activeUser&&state.activeUser.id===person.id?" active":"");
     const avatar=document.createElement("span");avatar.className="avatar";avatar.textContent=initials(person.username);
     const copy=document.createElement("span");copy.className="chat-item-copy";
-    const name=document.createElement("strong");name.textContent=person.username;
+    const name=document.createElement("strong");name.textContent=person.display_name||person.username;const code=document.createElement("span");code.className="contact-code";code.textContent=person.connection_code?"· "+person.connection_code:"";
     const preview=document.createElement("span");preview.textContent=person.last_message||"Start a conversation";
-    copy.append(name,preview);button.append(avatar,copy);button.addEventListener("click",()=>selectChat(person));list.append(button);
+    copy.append(name,code,preview);button.append(avatar,copy);button.addEventListener("click",()=>selectChat(person));list.append(button);
   });
 }
 async function selectChat(person){
   state.activeUser=person;$("#empty-state").classList.add("hidden");$("#chat-view").classList.remove("hidden");
-  $("#active-name").textContent=person.username;$("#active-avatar").textContent=initials(person.username);$("#topbar-title").textContent=person.username;
+  $("#active-name").textContent=person.display_name||person.username;$("#active-code").textContent=person.connection_code||"";$("#active-avatar").textContent=initials(person.display_name||person.username);$("#topbar-title").textContent=person.username;
   renderChats();await loadMessages();closeMobileSidebar();$("#message-input").focus();
 }
 async function loadMessages(){
@@ -171,7 +165,7 @@ async function reportActiveUser(){
   try{const result=await api("/api/users/"+state.activeUser.id+"/report",{method:"POST",body:{reason}});toast(result.message);}
   catch(error){toast(error.message);}
 }
-async function refreshMe(){const result=await api("/api/me");state.user=result.user;state.code=result.code;state.codeExpiresAt=result.codeExpiresAt;renderCode();}
+async function refreshMe(){const result=await api("/api/me");state.user=result.user;state.code=result.code;state.codeExpiresAt=null;renderCode();}
 function setupSocket(){
   if(state.socket)state.socket.disconnect();if(typeof window.io!=="function")return;
   state.socket=window.io();
@@ -182,11 +176,20 @@ function setupSocket(){
   });
   state.socket.on("connections-updated",()=>{refreshMe().catch(()=>{});loadConnections().catch(()=>{});loadChats().catch(()=>{});});
 }
+async function loadSettings(){try{const result=await api("/api/settings");applyTheme(result.theme);}catch{}}
+function applyTheme(theme){document.documentElement.dataset.theme=theme||"blue";document.querySelectorAll("[data-theme-choice]").forEach(b=>b.classList.toggle("selected",b.dataset.themeChoice===document.documentElement.dataset.theme));}
+async function saveTheme(theme){try{const result=await api("/api/settings/theme",{method:"POST",body:{theme}});applyTheme(result.theme);toast("Screen color updated.");}catch(error){toast(error.message);}}
 function closeMobileSidebar(){$(".sidebar").classList.remove("open");}
 function bindEvents(){
   $("#auth-form").addEventListener("submit",handleAuth);
   $("#auth-switch").addEventListener("click",()=>setAuthMode(state.authMode==="login"?"register":"login"));
-  $("#invite-form").addEventListener("submit",sendInvite);$("#copy-code").addEventListener("click",copyCode);$("#new-code").addEventListener("click",rotateCode);
+  $("#invite-form").addEventListener("submit",sendInvite);$("#copy-code").addEventListener("click",copyCode);
+  $("#settings-button").addEventListener("click",async()=>{$("#settings-modal").classList.remove("hidden");await loadSettings();});
+  $("#settings-close").addEventListener("click",()=>$("#settings-modal").classList.add("hidden"));
+  $("#theme-options").addEventListener("click",event=>{const button=event.target.closest("[data-theme-choice]");if(button)saveTheme(button.dataset.themeChoice);});
+  $("#change-code-settings").addEventListener("click",()=>{$("#settings-modal").classList.add("hidden");$("#code-warning-modal").classList.remove("hidden");});
+  $("#warning-back").addEventListener("click",()=>$("#code-warning-modal").classList.add("hidden"));
+  $("#warning-yes").addEventListener("click",async()=>{$("#code-warning-modal").classList.add("hidden");await rotateCode();state.activeUser=null;$("#chat-view").classList.add("hidden");$("#empty-state").classList.remove("hidden");await Promise.all([loadChats(),loadConnections()]);});
   $("#logout-button").addEventListener("click",async()=>{
     try{await api("/api/auth/logout",{method:"POST",body:{}});}catch{}
     if(state.socket)state.socket.disconnect();clearInterval(state.expiryTimer);state.user=null;state.activeUser=null;
