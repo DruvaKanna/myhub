@@ -1,7 +1,7 @@
 (() => {
 "use strict";
 const $=s=>document.querySelector(s);
-const state={authMode:"login",user:null,code:"",chats:[],activeUser:null,messages:[],socket:null,selectedFiles:[],toastTimer:null};
+const state={authMode:"login",user:null,code:"",chats:[],activeUser:null,messages:[],socket:null,selectedFiles:[],toastTimer:null,game:null,gameBusy:false};
 async function api(url,options){
   const opts=Object.assign({credentials:"same-origin"},options||{});opts.headers=Object.assign({},opts.headers||{});
   if(opts.body&&!(opts.body instanceof FormData)&&typeof opts.body!=="string"){opts.headers["Content-Type"]="application/json";opts.body=JSON.stringify(opts.body);}
@@ -189,7 +189,71 @@ function setupSocket(){
     loadChats().catch(()=>{});
   });
   state.socket.on("connections-updated",()=>{refreshMe().catch(()=>{});loadConnections().catch(()=>{});loadChats().catch(()=>{});});
+  state.socket.on("game-updated",()=>{if(state.activeUser&& !$("#game-modal").classList.contains("hidden"))loadGame();});
 }
+
+async function openGames(){
+  if(!state.activeUser)return;
+  $("#game-modal").classList.remove("hidden");
+  await loadGame();
+}
+async function loadGame(){
+  if(!state.activeUser)return;
+  try{const result=await api("/api/chats/"+state.activeUser.id+"/game");state.game=result.game;renderGame();}
+  catch(error){toast(error.message);}
+}
+function renderGame(){
+  const game=state.game,board=$("#game-board"),actions=$("#game-invite-actions");
+  board.replaceChildren();actions.classList.add("hidden");$("#game-new").classList.add("hidden");$("#game-role").textContent="";
+  if(!game){
+    $("#game-status").textContent="Challenge "+(state.activeUser.display_name||state.activeUser.username)+" to Tic-Tac-Toe.";
+    $("#game-new").textContent="Send game invitation";$("#game-new").classList.remove("hidden");
+    board.classList.add("hidden");return;
+  }
+  board.classList.remove("hidden");
+  const me=game.player_x===state.user.id?"X":game.player_o===state.user.id?"O":null;
+  if(game.status==="pending"){
+    if(me==="O"){
+      $("#game-status").textContent="Your friend invited you to play. Accept to start.";
+      actions.classList.remove("hidden");$("#game-new").classList.add("hidden");
+    }else{
+      $("#game-status").textContent="Invitation sent. Waiting for your friend to accept.";
+      $("#game-new").textContent="Cancel / send a new invite after this one";$("#game-new").classList.add("hidden");
+    }
+  }else if(game.status==="active"){
+    $("#game-status").textContent=game.turn===me?"Your turn ("+me+").":"Waiting for "+(game.turn==="X"?"your friend (X)":"your friend (O)")+".";
+  }else if(game.status==="won"){
+    $("#game-status").textContent=game.winner===me?"You won!":"Your friend won this round.";
+    $("#game-new").textContent="Play again";$("#game-new").classList.remove("hidden");
+  }else if(game.status==="draw"){
+    $("#game-status").textContent="It's a draw!";
+    $("#game-new").textContent="Play again";$("#game-new").classList.remove("hidden");
+  }else{
+    $("#game-status").textContent="The game invitation was declined.";
+    $("#game-new").textContent="Send another invitation";$("#game-new").classList.remove("hidden");
+  }
+  $("#game-role").textContent=me?"You are "+me:"";
+  for(let i=0;i<9;i++){
+    const cell=document.createElement("button");cell.type="button";cell.className="game-cell";cell.textContent=game.board[i]==="."?"":game.board[i];cell.setAttribute("aria-label","Square "+(i+1)+(cell.textContent?", "+cell.textContent:""));
+    cell.disabled=game.status!=="active"||game.turn!==me||game.board[i]!==".";
+    cell.addEventListener("click",()=>playGameMove(i));board.append(cell);
+  }
+}
+async function createGame(){
+  if(!state.activeUser||state.gameBusy)return;
+  state.gameBusy=true;
+  try{const result=await api("/api/chats/"+state.activeUser.id+"/game",{method:"POST",body:{}});state.game=result.game;renderGame();toast("Game invitation sent.");}
+  catch(error){toast(error.message);}
+  finally{state.gameBusy=false;}
+}
+async function playGameMove(cell){
+  if(!state.game||state.gameBusy)return;
+  state.gameBusy=true;
+  try{const result=await api("/api/games/"+state.game.id+"/move",{method:"POST",body:{cell}});state.game=result.game;renderGame();}
+  catch(error){toast(error.message);await loadGame();}
+  finally{state.gameBusy=false;}
+}
+
 async function loadSettings(){try{const result=await api("/api/settings");applyTheme(result.theme);}catch{}}
 function applyTheme(theme){document.documentElement.dataset.theme=theme||"blue";document.querySelectorAll("[data-theme-choice]").forEach(b=>b.classList.toggle("selected",b.dataset.themeChoice===document.documentElement.dataset.theme));}
 async function saveTheme(theme){try{const result=await api("/api/settings/theme",{method:"POST",body:{theme}});applyTheme(result.theme);toast("Screen color updated.");}catch(error){toast(error.message);}}
@@ -213,6 +277,7 @@ function bindEvents(){
   $("#empty-connect").addEventListener("click",()=>{$(".sidebar").classList.add("open");$("#invite-code").focus();});
   $("#mobile-menu").addEventListener("click",()=>$(".sidebar").classList.add("open"));$("#mobile-close").addEventListener("click",closeMobileSidebar);
   $("#composer").addEventListener("submit",sendMessage);$("#file-input").addEventListener("change",event=>chooseFiles(event.target.files));
+  $("#games-button").addEventListener("click",openGames);$("#game-close").addEventListener("click",()=>$("#game-modal").classList.add("hidden"));$("#game-new").addEventListener("click",createGame);$("#game-accept").addEventListener("click",async()=>{if(!state.game)return;try{const result=await api("/api/games/"+state.game.id+"/accept",{method:"POST",body:{}});state.game=result.game;renderGame();}catch(error){toast(error.message);}});$("#game-decline").addEventListener("click",async()=>{if(!state.game)return;try{const result=await api("/api/games/"+state.game.id+"/decline",{method:"POST",body:{}});state.game=result.game;renderGame();}catch(error){toast(error.message);}});
   $("#block-person").addEventListener("click",blockActiveUser);$("#report-person").addEventListener("click",reportActiveUser);
   $("#message-input").addEventListener("keydown",event=>{if(event.key==="Enter"&&!event.shiftKey){event.preventDefault();$("#composer").requestSubmit();}});
   const view=$("#chat-view");

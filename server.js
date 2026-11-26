@@ -35,7 +35,7 @@ db.exec("CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT,u
 "CREATE TABLE IF NOT EXISTS messages(id INTEGER PRIMARY KEY AUTOINCREMENT,sender_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,recipient_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,body TEXT NOT NULL DEFAULT '',created_at INTEGER NOT NULL);"+
 "CREATE TABLE IF NOT EXISTS files(id INTEGER PRIMARY KEY AUTOINCREMENT,message_id INTEGER NOT NULL REFERENCES messages(id) ON DELETE CASCADE,stored_name TEXT NOT NULL UNIQUE,original_name TEXT NOT NULL,mime_type TEXT NOT NULL,size_bytes INTEGER NOT NULL);"+
 "CREATE TABLE IF NOT EXISTS blocks(blocker_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,blocked_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,created_at INTEGER NOT NULL,PRIMARY KEY(blocker_id,blocked_id));"+
-"CREATE TABLE IF NOT EXISTS reports(id INTEGER PRIMARY KEY AUTOINCREMENT,reporter_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,reported_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,reason TEXT NOT NULL,created_at INTEGER NOT NULL);"+"CREATE TABLE IF NOT EXISTS contact_names(owner_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,contact_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,name TEXT NOT NULL,PRIMARY KEY(owner_id,contact_id));"+"CREATE TABLE IF NOT EXISTS user_preferences(user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,theme TEXT NOT NULL DEFAULT 'blue');"+
+"CREATE TABLE IF NOT EXISTS reports(id INTEGER PRIMARY KEY AUTOINCREMENT,reporter_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,reported_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,reason TEXT NOT NULL,created_at INTEGER NOT NULL);"+"CREATE TABLE IF NOT EXISTS contact_names(owner_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,contact_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,name TEXT NOT NULL,PRIMARY KEY(owner_id,contact_id));"+"CREATE TABLE IF NOT EXISTS user_preferences(user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,theme TEXT NOT NULL DEFAULT 'blue');"+"CREATE TABLE IF NOT EXISTS games(id INTEGER PRIMARY KEY AUTOINCREMENT,player_x INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,player_o INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,status TEXT NOT NULL DEFAULT 'pending',board TEXT NOT NULL DEFAULT '.........',turn TEXT NOT NULL DEFAULT 'X',winner TEXT,created_at INTEGER NOT NULL,updated_at INTEGER NOT NULL);"+
 "CREATE INDEX IF NOT EXISTS idx_messages_pair_time ON messages(sender_id,recipient_id,created_at);"+
 "CREATE INDEX IF NOT EXISTS idx_requests_target_status ON connection_requests(target_id,status);"+
 "CREATE INDEX IF NOT EXISTS idx_files_message ON files(message_id);");
@@ -296,6 +296,60 @@ app.post("/api/users/:userId/report",requireAuth,(req,res)=>{
   if(reason.length<5)return res.status(400).json({error:"Please add a little more detail to the report."});
   db.prepare("INSERT INTO reports(reporter_id,reported_id,reason,created_at) VALUES(?,?,?,?)").run(req.user.id,other,reason,Date.now());
   res.json({ok:true,message:"Report saved. This first version stores reports but does not yet include an administrator review dashboard."});
+});
+
+
+function getGameForUsers(a,b){
+  return db.prepare("SELECT id,player_x,player_o,status,board,turn,winner,created_at,updated_at FROM games WHERE (player_x=? AND player_o=?) OR (player_x=? AND player_o=?) ORDER BY id DESC LIMIT 1").get(a,b,b,a)||null;
+}
+function emitGameUpdate(game){
+  io.to("user:"+game.player_x).emit("game-updated",{gameId:game.id});
+  io.to("user:"+game.player_o).emit("game-updated",{gameId:game.id});
+}
+app.get("/api/chats/:userId/game",requireAuth,chatGuard,(req,res)=>{
+  const game=getGameForUsers(req.user.id,req.otherUserId);
+  res.json({game});
+});
+app.post("/api/chats/:userId/game",requireAuth,chatGuard,actionLimiter,(req,res)=>{
+  const existing=getGameForUsers(req.user.id,req.otherUserId);
+  if(existing&&(existing.status==="pending"||existing.status==="active"))return res.status(409).json({error:"There is already a game waiting or in progress."});
+  const now=Date.now();
+  const result=db.prepare("INSERT INTO games(player_x,player_o,status,board,turn,created_at,updated_at) VALUES(?,?,'pending','.........','X',?,?)").run(req.user.id,req.otherUserId,now,now);
+  const game=db.prepare("SELECT id,player_x,player_o,status,board,turn,winner,created_at,updated_at FROM games WHERE id=?").get(result.lastInsertRowid);
+  emitGameUpdate(game);res.status(201).json({game});
+});
+app.post("/api/games/:gameId/accept",requireAuth,actionLimiter,(req,res)=>{
+  const game=db.prepare("SELECT * FROM games WHERE id=?").get(Number(req.params.gameId));
+  if(!game||game.player_o!==req.user.id||game.status!=="pending")return res.status(404).json({error:"That game invitation is no longer available."});
+  db.prepare("UPDATE games SET status='active',updated_at=? WHERE id=? AND status='pending'").run(Date.now(),game.id);
+  const updated=db.prepare("SELECT id,player_x,player_o,status,board,turn,winner,created_at,updated_at FROM games WHERE id=?").get(game.id);
+  emitGameUpdate(updated);res.json({game:updated});
+});
+app.post("/api/games/:gameId/decline",requireAuth,(req,res)=>{
+  const game=db.prepare("SELECT * FROM games WHERE id=?").get(Number(req.params.gameId));
+  if(!game||game.player_o!==req.user.id||game.status!=="pending")return res.status(404).json({error:"That game invitation is no longer available."});
+  db.prepare("UPDATE games SET status='declined',updated_at=? WHERE id=? AND status='pending'").run(Date.now(),game.id);
+  const updated=db.prepare("SELECT id,player_x,player_o,status,board,turn,winner,created_at,updated_at FROM games WHERE id=?").get(game.id);
+  emitGameUpdate(updated);res.json({game:updated});
+});
+app.post("/api/games/:gameId/move",requireAuth,actionLimiter,(req,res)=>{
+  const id=Number(req.params.gameId),cell=Number(req.body.cell);
+  if(!Number.isInteger(cell)||cell<0||cell>8)return res.status(400).json({error:"Choose a square on the board."});
+  const game=db.prepare("SELECT * FROM games WHERE id=?").get(id);
+  if(!game||game.status!=="active")return res.status(404).json({error:"This game is not active."});
+  const mark=game.player_x===req.user.id?"X":game.player_o===req.user.id?"O":null;
+  if(!mark)return res.status(403).json({error:"You are not a player in this game."});
+  if(game.turn!==mark)return res.status(409).json({error:"Wait for your turn."});
+  if(game.board[cell]!==".")return res.status(409).json({error:"That square is already taken."});
+  const board=game.board.slice(0,cell)+mark+game.board.slice(cell+1);
+  const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  const won=wins.some(line=>line.every(i=>board[i]===mark));
+  const draw=!won&&!board.includes(".");
+  const status=won?"won":draw?"draw":"active";
+  db.prepare("UPDATE games SET board=?,turn=?,status=?,winner=?,updated_at=? WHERE id=? AND status='active' AND turn=?").run(board,mark==="X"?"O":"X",status,won?mark:null,Date.now(),id,mark);
+  const updated=db.prepare("SELECT id,player_x,player_o,status,board,turn,winner,created_at,updated_at FROM games WHERE id=?").get(id);
+  if(updated.board!==board)return res.status(409).json({error:"The board changed. Refresh the game and try again."});
+  emitGameUpdate(updated);res.json({game:updated});
 });
 
 app.use(express.static(path.join(__dirname,"public")));
