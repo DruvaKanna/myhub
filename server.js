@@ -19,7 +19,7 @@ const UPLOAD_DIR=path.join(DATA_DIR,"uploads");
 const SECRET=process.env.SESSION_SECRET||"local-development-secret-change-this-before-deploying";
 const COOKIE_NAME="cc_session";
 const SESSION_MS=14*24*60*60*1000;
-const CODE_MS=10*60*1000;
+const CODE_MS=0;
 const MAX_MB=Math.min(Math.max(Number(process.env.MAX_UPLOAD_MB||15),1),25);
 const ALPHABET="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 if(process.env.NODE_ENV==="production"&&SECRET==="local-development-secret-change-this-before-deploying")throw new Error("Set SESSION_SECRET before production startup.");
@@ -29,13 +29,13 @@ const db=new Database(path.join(DATA_DIR,"chat-chat.sqlite"));
 db.pragma("journal_mode = WAL");
 db.pragma("foreign_keys = ON");
 db.exec("CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT,username TEXT NOT NULL,email TEXT NOT NULL COLLATE NOCASE UNIQUE,password_hash TEXT NOT NULL,created_at INTEGER NOT NULL);"+
-"CREATE TABLE IF NOT EXISTS codes(user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,code TEXT NOT NULL UNIQUE,created_at INTEGER NOT NULL,expires_at INTEGER NOT NULL);"+
+"CREATE TABLE IF NOT EXISTS codes(user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,code TEXT NOT NULL UNIQUE,created_at INTEGER NOT NULL,expires_at INTEGER NOT NULL DEFAULT 0);"+
 "CREATE TABLE IF NOT EXISTS connection_requests(id INTEGER PRIMARY KEY AUTOINCREMENT,requester_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,target_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,status TEXT NOT NULL DEFAULT 'pending',created_at INTEGER NOT NULL,UNIQUE(requester_id,target_id));"+
 "CREATE TABLE IF NOT EXISTS connections(user_a INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,user_b INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,created_at INTEGER NOT NULL,PRIMARY KEY(user_a,user_b),CHECK(user_a<user_b));"+
 "CREATE TABLE IF NOT EXISTS messages(id INTEGER PRIMARY KEY AUTOINCREMENT,sender_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,recipient_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,body TEXT NOT NULL DEFAULT '',created_at INTEGER NOT NULL);"+
 "CREATE TABLE IF NOT EXISTS files(id INTEGER PRIMARY KEY AUTOINCREMENT,message_id INTEGER NOT NULL REFERENCES messages(id) ON DELETE CASCADE,stored_name TEXT NOT NULL UNIQUE,original_name TEXT NOT NULL,mime_type TEXT NOT NULL,size_bytes INTEGER NOT NULL);"+
 "CREATE TABLE IF NOT EXISTS blocks(blocker_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,blocked_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,created_at INTEGER NOT NULL,PRIMARY KEY(blocker_id,blocked_id));"+
-"CREATE TABLE IF NOT EXISTS reports(id INTEGER PRIMARY KEY AUTOINCREMENT,reporter_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,reported_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,reason TEXT NOT NULL,created_at INTEGER NOT NULL);"+
+"CREATE TABLE IF NOT EXISTS reports(id INTEGER PRIMARY KEY AUTOINCREMENT,reporter_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,reported_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,reason TEXT NOT NULL,created_at INTEGER NOT NULL);"+"CREATE TABLE IF NOT EXISTS contact_names(owner_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,contact_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,name TEXT NOT NULL,PRIMARY KEY(owner_id,contact_id));"+"CREATE TABLE IF NOT EXISTS user_preferences(user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,theme TEXT NOT NULL DEFAULT 'blue');"+
 "CREATE INDEX IF NOT EXISTS idx_messages_pair_time ON messages(sender_id,recipient_id,created_at);"+
 "CREATE INDEX IF NOT EXISTS idx_requests_target_status ON connection_requests(target_id,status);"+
 "CREATE INDEX IF NOT EXISTS idx_files_message ON files(message_id);");
@@ -84,13 +84,13 @@ function issueCode(userId){
   for(let i=0;i<80;i++){
     const code=randomCode(),now=Date.now();
     try{
-      db.prepare("INSERT INTO codes(user_id,code,created_at,expires_at) VALUES(?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET code=excluded.code,created_at=excluded.created_at,expires_at=excluded.expires_at").run(userId,code,now,now+CODE_MS);
-      return{code:code,expiresAt:now+CODE_MS};
+      db.prepare("INSERT INTO codes(user_id,code,created_at,expires_at) VALUES(?,?,?,0) ON CONFLICT(user_id) DO UPDATE SET code=excluded.code,created_at=excluded.created_at,expires_at=0").run(userId,code,now);
+      return{code:code,expiresAt:null};
     }catch(error){if(!String(error.message).includes("UNIQUE"))throw error;}
   }
   throw new Error("Could not generate a code. Please try again.");
 }
-function currentCode(id){const row=db.prepare("SELECT code,expires_at FROM codes WHERE user_id=?").get(id);return row&&row.expires_at>Date.now()?{code:row.code,expiresAt:row.expires_at}:issueCode(id);}
+function currentCode(id){const row=db.prepare("SELECT code FROM codes WHERE user_id=?").get(id);return row?{code:row.code,expiresAt:null}:issueCode(id);}
 function pairIds(a,b){return[Math.min(Number(a),Number(b)),Math.max(Number(a),Number(b))];}
 function isConnected(a,b){const p=pairIds(a,b);return!!db.prepare("SELECT 1 FROM connections WHERE user_a=? AND user_b=?").get(p[0],p[1]);}
 function isBlocked(a,b){return!!db.prepare("SELECT 1 FROM blocks WHERE (blocker_id=? AND blocked_id=?) OR (blocker_id=? AND blocked_id=?)").get(a,b,b,a);}
@@ -165,7 +165,7 @@ app.post("/api/code/rotate",requireAuth,actionLimiter,(req,res,next)=>{try{res.j
 
 app.get("/api/connections",requireAuth,(req,res)=>{
   const id=req.user.id;
-  const accepted=db.prepare("SELECT u.id,u.username,(SELECT MAX(m.created_at) FROM messages m WHERE (m.sender_id=u.id AND m.recipient_id=?) OR (m.sender_id=? AND m.recipient_id=u.id)) AS last_message_at FROM connections c JOIN users u ON u.id=CASE WHEN c.user_a=? THEN c.user_b ELSE c.user_a END WHERE c.user_a=? OR c.user_b=? ORDER BY COALESCE(last_message_at,c.created_at) DESC").all(id,id,id,id,id);
+  const accepted=db.prepare("SELECT u.id,u.username,COALESCE(cn.name,u.username) AS display_name,co.code AS connection_code,(SELECT MAX(m.created_at) FROM messages m WHERE (m.sender_id=u.id AND m.recipient_id=?) OR (m.sender_id=? AND m.recipient_id=u.id)) AS last_message_at FROM connections c JOIN users u ON u.id=CASE WHEN c.user_a=? THEN c.user_b ELSE c.user_a END LEFT JOIN contact_names cn ON cn.owner_id=? AND cn.contact_id=u.id LEFT JOIN codes co ON co.user_id=u.id WHERE c.user_a=? OR c.user_b=? ORDER BY COALESCE(last_message_at,c.created_at) DESC").all(id,id,id,id,id,id);
   const incoming=db.prepare("SELECT r.id AS request_id,r.created_at,u.id AS user_id,u.username FROM connection_requests r JOIN users u ON u.id=r.requester_id WHERE r.target_id=? AND r.status='pending' ORDER BY r.created_at DESC").all(id);
   const outgoing=db.prepare("SELECT r.id AS request_id,r.created_at,u.id AS user_id,u.username FROM connection_requests r JOIN users u ON u.id=r.target_id WHERE r.requester_id=? AND r.status='pending' ORDER BY r.created_at DESC").all(id);
   res.json({accepted,incoming,outgoing});
@@ -173,8 +173,8 @@ app.get("/api/connections",requireAuth,(req,res)=>{
 app.post("/api/connections/invite",requireAuth,actionLimiter,(req,res)=>{
   const code=String(req.body.code||"").trim().toUpperCase();
   if(!/^[A-Z0-9]{5}$/.test(code))return res.status(400).json({error:"Enter a five-character connection code."});
-  const match=db.prepare("SELECT user_id FROM codes WHERE code=? AND expires_at>?").get(code,Date.now());
-  if(!match)return res.status(404).json({error:"That code is not active. Ask your friend to generate a fresh code."});
+  const match=db.prepare("SELECT user_id FROM codes WHERE code=?").get(code);
+  if(!match)return res.status(404).json({error:"That connection code was not found."});
   const target=match.user_id;
   if(target===req.user.id)return res.status(400).json({error:"That is your own code."});
   if(isBlocked(req.user.id,target))return res.status(403).json({error:"This connection is not available."});
@@ -188,18 +188,19 @@ app.post("/api/connections/invite",requireAuth,actionLimiter,(req,res)=>{
   res.status(201).json({ok:true,requestId:requestId,message:"Invite sent. Your friend must enter your current code to confirm."});
 });
 app.post("/api/connections/confirm",requireAuth,actionLimiter,(req,res)=>{
-  const requestId=Number(req.body.requestId),code=String(req.body.code||"").trim().toUpperCase();
-  if(!Number.isSafeInteger(requestId)||!/^[A-Z0-9]{5}$/.test(code))return res.status(400).json({error:"Enter the other person's five-character code."});
+  const requestId=Number(req.body.requestId),code=String(req.body.code||"").trim().toUpperCase(),contactName=String(req.body.contactName||"").trim();
+  if(!Number.isSafeInteger(requestId)||!/^[A-Z0-9]{5}$/.test(code)||contactName.length<1||contactName.length>40)return res.status(400).json({error:"Enter the other person's five-character code and a name for this contact."});
   const invite=db.prepare("SELECT id,requester_id,target_id FROM connection_requests WHERE id=? AND target_id=? AND status='pending'").get(requestId,req.user.id);
   if(!invite)return res.status(404).json({error:"That invitation is no longer waiting."});
-  const theirCode=db.prepare("SELECT code,expires_at FROM codes WHERE user_id=?").get(invite.requester_id);
-  if(!theirCode||theirCode.expires_at<=Date.now()||theirCode.code!==code)return res.status(400).json({error:"The code does not match. Ask the person who invited you to show their current code."});
+  const theirCode=db.prepare("SELECT code FROM codes WHERE user_id=?").get(invite.requester_id);
+  if(!theirCode||theirCode.code!==code)return res.status(400).json({error:"The code does not match. Ask the person who invited you to show their code."});
   if(isBlocked(req.user.id,invite.requester_id))return res.status(403).json({error:"This connection is not available."});
   const pair=pairIds(req.user.id,invite.requester_id),now=Date.now();
   db.transaction(()=>{
     db.prepare("INSERT OR IGNORE INTO connections(user_a,user_b,created_at) VALUES(?,?,?)").run(pair[0],pair[1],now);
     db.prepare("UPDATE connection_requests SET status='accepted' WHERE id=?").run(invite.id);
     db.prepare("DELETE FROM codes WHERE user_id IN (?,?)").run(pair[0],pair[1]);
+    db.prepare("INSERT INTO contact_names(owner_id,contact_id,name) VALUES(?,?,?) ON CONFLICT(owner_id,contact_id) DO UPDATE SET name=excluded.name").run(req.user.id,invite.requester_id,contactName);
     db.prepare("DELETE FROM connection_requests WHERE status='pending' AND ((requester_id=? AND target_id=?) OR (requester_id=? AND target_id=?))").run(pair[0],pair[1],pair[1],pair[0]);
     issueCode(pair[0]);issueCode(pair[1]);
   })();
@@ -212,9 +213,12 @@ app.post("/api/connections/:requestId/decline",requireAuth,(req,res)=>{
   res.json({ok:true});
 });
 
+app.get("/api/settings",requireAuth,(req,res)=>{const pref=db.prepare("SELECT theme FROM user_preferences WHERE user_id=?").get(req.user.id);res.json({theme:pref?.theme||"blue"});});
+app.post("/api/settings/theme",requireAuth,(req,res)=>{const allowedThemes=["blue","green","red","black","white","purple","orange"];const theme=String(req.body.theme||"blue");if(!allowedThemes.includes(theme))return res.status(400).json({error:"Unsupported screen color."});db.prepare("INSERT INTO user_preferences(user_id,theme) VALUES(?,?) ON CONFLICT(user_id) DO UPDATE SET theme=excluded.theme").run(req.user.id,theme);res.json({ok:true,theme});});
+app.post("/api/code/change",requireAuth,actionLimiter,(req,res,next)=>{try{const id=req.user.id;db.transaction(()=>{db.prepare("DELETE FROM connections WHERE user_a=? OR user_b=?").run(id,id);db.prepare("DELETE FROM connection_requests WHERE requester_id=? OR target_id=?").run(id,id);db.prepare("DELETE FROM contact_names WHERE owner_id=? OR contact_id=?").run(id,id);issueCode(id);})();emitConnectionUpdate(id);res.json(currentCode(id));}catch(error){next(error);}});
 app.get("/api/chats",requireAuth,(req,res)=>{
   const id=req.user.id;
-  const chats=db.prepare("SELECT u.id,u.username,c.created_at,(SELECT m.body FROM messages m WHERE (m.sender_id=u.id AND m.recipient_id=?) OR (m.sender_id=? AND m.recipient_id=u.id) ORDER BY m.created_at DESC,m.id DESC LIMIT 1) AS last_message,(SELECT m.created_at FROM messages m WHERE (m.sender_id=u.id AND m.recipient_id=?) OR (m.sender_id=? AND m.recipient_id=u.id) ORDER BY m.created_at DESC,m.id DESC LIMIT 1) AS last_message_at FROM connections c JOIN users u ON u.id=CASE WHEN c.user_a=? THEN c.user_b ELSE c.user_a END WHERE (c.user_a=? OR c.user_b=?) AND NOT EXISTS(SELECT 1 FROM blocks b WHERE (b.blocker_id=? AND b.blocked_id=u.id) OR (b.blocker_id=u.id AND b.blocked_id=?)) ORDER BY COALESCE(last_message_at,c.created_at) DESC").all(id,id,id,id,id,id,id,id,id);
+  const chats=db.prepare("SELECT u.id,u.username,COALESCE(cn.name,u.username) AS display_name,co.code AS connection_code,c.created_at,(SELECT m.body FROM messages m WHERE (m.sender_id=u.id AND m.recipient_id=?) OR (m.sender_id=? AND m.recipient_id=u.id) ORDER BY m.created_at DESC,m.id DESC LIMIT 1) AS last_message,(SELECT m.created_at FROM messages m WHERE (m.sender_id=u.id AND m.recipient_id=?) OR (m.sender_id=? AND m.recipient_id=u.id) ORDER BY m.created_at DESC,m.id DESC LIMIT 1) AS last_message_at FROM connections c JOIN users u ON u.id=CASE WHEN c.user_a=? THEN c.user_b ELSE c.user_a END LEFT JOIN contact_names cn ON cn.owner_id=? AND cn.contact_id=u.id LEFT JOIN codes co ON co.user_id=u.id WHERE (c.user_a=? OR c.user_b=?) AND NOT EXISTS(SELECT 1 FROM blocks b WHERE (b.blocker_id=? AND b.blocked_id=u.id) OR (b.blocker_id=u.id AND b.blocked_id=?)) ORDER BY COALESCE(last_message_at,c.created_at) DESC").all(id,id,id,id,id,id,id,id,id,id,id);
   res.json({chats});
 });
 app.get("/api/chats/:userId/messages",requireAuth,chatGuard,(req,res)=>{
