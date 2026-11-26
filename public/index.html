@@ -40,12 +40,12 @@
   <main id="app-screen" class="app-screen hidden">
     <aside class="sidebar">
       <div class="sidebar-top"><a class="brand" href="/" aria-label="Chat Chat home"><span class="brand-mark"><span></span><span></span><span></span></span><span>chat chat<span class="brand-dot">.</span></span></a><button id="mobile-close" class="icon-button mobile-close" type="button" aria-label="Close menu">×</button></div>
-      <div class="profile-strip"><div id="profile-avatar" class="avatar avatar-you">?</div><div class="profile-info"><strong id="profile-name">Your account</strong><span>Personal space</span></div><button id="logout-button" class="icon-button" type="button" title="Sign out" aria-label="Sign out">↗</button></div>
+      <div class="profile-strip"><div id="profile-avatar" class="avatar avatar-you">?</div><div class="profile-info"><strong id="profile-name">Your account</strong><span>Personal space</span></div><button id="settings-button" class="icon-button" type="button" title="Settings" aria-label="Settings">⚙</button><button id="logout-button" class="icon-button" type="button" title="Sign out" aria-label="Sign out">↗</button></div>
 
       <section class="code-card">
         <div class="code-card-top"><span class="eyebrow">YOUR CONNECTION CODE</span><span class="live-indicator">LIVE</span></div>
         <div class="code-row"><strong id="my-code">·····</strong><button id="copy-code" class="copy-button" type="button" aria-label="Copy code" title="Copy code">▢</button></div>
-        <div class="code-footer"><span id="code-expiry">Expires in 10 minutes</span><button id="new-code" class="text-button small" type="button">New code ↻</button></div>
+        <div class="code-footer"><span id="code-status">Your code stays active until you change it</span></div>
         <p>Share this code with someone you know in person.</p>
       </section>
 
@@ -82,6 +82,6 @@
       <footer class="main-footer"><span>Chat Chat</span><span>Text, links & files. No calls.</span></footer>
     </section>
   </main>
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <div id="settings-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="settings-title"><section class="settings-modal"><div class="settings-header"><div><p class="eyebrow">CHAT CHAT</p><h2 id="settings-title">Settings</h2></div><button id="settings-close" class="icon-button" type="button" aria-label="Close settings">×</button></div><div class="settings-section"><h3>Screen color</h3><p>Choose the color used throughout your Chat Chat screen.</p><div id="theme-options" class="theme-options"><button type="button" data-theme-choice="blue">Blue</button><button type="button" data-theme-choice="green">Green</button><button type="button" data-theme-choice="red">Red</button><button type="button" data-theme-choice="black">Black</button><button type="button" data-theme-choice="white">White</button><button type="button" data-theme-choice="purple">Purple</button><button type="button" data-theme-choice="orange">Orange</button></div></div><div class="settings-section danger-zone"><h3>Change connection code</h3><p>Changing your code permanently removes your current contacts and pending connection requests.</p><button id="change-code-settings" class="danger-button" type="button">Change my code</button></div></section></div><div id="code-warning-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="code-warning-title"><section class="warning-modal"><div class="warning-line"></div><h2 id="code-warning-title">WARNING!</h2><div class="warning-line"></div><p>You are going to delete all your contacts<br><br>by doing this.</p><p class="warning-question">ARE YOU SURE?</p><div class="warning-actions"><button id="warning-yes" class="danger-button" type="button">YES</button><button id="warning-back" class="button" type="button">BACK</button></div><div class="warning-line"></div></section></div><div id="toast" class="toast" role="status" aria-live="polite"></div>
 </body>
 </html>
