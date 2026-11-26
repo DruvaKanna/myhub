@@ -151,17 +151,17 @@ app.post("/api/auth/login",authLimiter,async(req,res,next)=>{
     const email=String(req.body.email||"").trim().toLowerCase(),password=String(req.body.password||"");
     const user=db.prepare("SELECT id,username,email,password_hash FROM users WHERE email=?").get(email);
     if(!user||!(await bcrypt.compare(password,user.password_hash)))return res.status(401).json({error:"Email or password is incorrect."});
-    const code=issueCode(user.id);setSession(res,user.id);
-    res.json({user:safeUser(user),code:code.code,codeExpiresAt:code.expiresAt});
+    const code=currentCode(user.id);setSession(res,user.id);
+    res.json({user:safeUser(user),code:code.code});
   }catch(error){next(error);}
 });
 app.post("/api/auth/logout",requireAuth,(req,res)=>{
-  db.prepare("DELETE FROM codes WHERE user_id=?").run(req.user.id);
+  // Signing out ends the session, not the user's permanent connection code.
   res.clearCookie(COOKIE_NAME,{httpOnly:true,secure:process.env.NODE_ENV==="production",sameSite:"lax",path:"/"});
   res.json({ok:true});
 });
-app.get("/api/me",requireAuth,(req,res)=>{const code=currentCode(req.user.id);res.json({user:safeUser(req.user),code:code.code,codeExpiresAt:code.expiresAt});});
-app.post("/api/code/rotate",requireAuth,actionLimiter,(req,res,next)=>{try{res.json(issueCode(req.user.id));}catch(error){next(error);}});
+app.get("/api/me",requireAuth,(req,res)=>{const code=currentCode(req.user.id);res.json({user:safeUser(req.user),code:code.code});});
+app.post("/api/code/rotate",requireAuth,(req,res)=>res.status(410).json({error:"Change your code from Settings. This action requires a warning and removes your contacts."}));
 
 app.get("/api/connections",requireAuth,(req,res)=>{
   const id=req.user.id;
@@ -199,10 +199,8 @@ app.post("/api/connections/confirm",requireAuth,actionLimiter,(req,res)=>{
   db.transaction(()=>{
     db.prepare("INSERT OR IGNORE INTO connections(user_a,user_b,created_at) VALUES(?,?,?)").run(pair[0],pair[1],now);
     db.prepare("UPDATE connection_requests SET status='accepted' WHERE id=?").run(invite.id);
-    db.prepare("DELETE FROM codes WHERE user_id IN (?,?)").run(pair[0],pair[1]);
     db.prepare("INSERT INTO contact_names(owner_id,contact_id,name) VALUES(?,?,?) ON CONFLICT(owner_id,contact_id) DO UPDATE SET name=excluded.name").run(req.user.id,invite.requester_id,contactName);
     db.prepare("DELETE FROM connection_requests WHERE status='pending' AND ((requester_id=? AND target_id=?) OR (requester_id=? AND target_id=?))").run(pair[0],pair[1],pair[1],pair[0]);
-    issueCode(pair[0]);issueCode(pair[1]);
   })();
   emitConnectionUpdate(pair[0],pair[1]);
   res.json({ok:true,message:"You are connected. Your chats are ready."});
@@ -215,7 +213,33 @@ app.post("/api/connections/:requestId/decline",requireAuth,(req,res)=>{
 
 app.get("/api/settings",requireAuth,(req,res)=>{const pref=db.prepare("SELECT theme FROM user_preferences WHERE user_id=?").get(req.user.id);res.json({theme:pref?.theme||"blue"});});
 app.post("/api/settings/theme",requireAuth,(req,res)=>{const allowedThemes=["blue","green","red","black","white","purple","orange"];const theme=String(req.body.theme||"blue");if(!allowedThemes.includes(theme))return res.status(400).json({error:"Unsupported screen color."});db.prepare("INSERT INTO user_preferences(user_id,theme) VALUES(?,?) ON CONFLICT(user_id) DO UPDATE SET theme=excluded.theme").run(req.user.id,theme);res.json({ok:true,theme});});
-app.post("/api/code/change",requireAuth,actionLimiter,(req,res,next)=>{try{const id=req.user.id;db.transaction(()=>{db.prepare("DELETE FROM connections WHERE user_a=? OR user_b=?").run(id,id);db.prepare("DELETE FROM connection_requests WHERE requester_id=? OR target_id=?").run(id,id);db.prepare("DELETE FROM contact_names WHERE owner_id=? OR contact_id=?").run(id,id);issueCode(id);})();emitConnectionUpdate(id);res.json(currentCode(id));}catch(error){next(error);}});
+app.post("/api/code/change",requireAuth,actionLimiter,(req,res,next)=>{
+  try{
+    const id=req.user.id;
+    const connections=db.prepare("SELECT CASE WHEN user_a=? THEN user_b ELSE user_a END AS contact_id FROM connections WHERE user_a=? OR user_b=?").all(id,id,id);
+    const pending=db.prepare("SELECT requester_id,target_id FROM connection_requests WHERE requester_id=? OR target_id=?").all(id,id);
+    const notifyIds=[...new Set([
+      ...connections.map(row=>row.contact_id),
+      ...pending.flatMap(row=>[row.requester_id,row.target_id]).filter(otherId=>otherId!==id)
+    ])];
+    const storedFiles=db.prepare("SELECT f.stored_name FROM files f JOIN messages m ON m.id=f.message_id WHERE m.sender_id=? OR m.recipient_id=?").all(id,id);
+
+    const updatedCode=db.transaction(()=>{
+      // Changing a code disconnects every contact and removes the related chat history.
+      db.prepare("DELETE FROM messages WHERE sender_id=? OR recipient_id=?").run(id,id);
+      db.prepare("DELETE FROM connections WHERE user_a=? OR user_b=?").run(id,id);
+      db.prepare("DELETE FROM connection_requests WHERE requester_id=? OR target_id=?").run(id,id);
+      db.prepare("DELETE FROM contact_names WHERE owner_id=? OR contact_id=?").run(id,id);
+      return issueCode(id);
+    })();
+
+    for(const file of storedFiles){
+      try{fs.unlinkSync(path.join(UPLOAD_DIR,file.stored_name));}catch{}
+    }
+    emitConnectionUpdate(id,...notifyIds);
+    res.json({code:updatedCode.code,removedContacts:connections.length});
+  }catch(error){next(error);}
+});
 app.get("/api/chats",requireAuth,(req,res)=>{
   const id=req.user.id;
   const chats=db.prepare("SELECT u.id,u.username,COALESCE(cn.name,u.username) AS display_name,co.code AS connection_code,c.created_at,(SELECT m.body FROM messages m WHERE (m.sender_id=u.id AND m.recipient_id=?) OR (m.sender_id=? AND m.recipient_id=u.id) ORDER BY m.created_at DESC,m.id DESC LIMIT 1) AS last_message,(SELECT m.created_at FROM messages m WHERE (m.sender_id=u.id AND m.recipient_id=?) OR (m.sender_id=? AND m.recipient_id=u.id) ORDER BY m.created_at DESC,m.id DESC LIMIT 1) AS last_message_at FROM connections c JOIN users u ON u.id=CASE WHEN c.user_a=? THEN c.user_b ELSE c.user_a END LEFT JOIN contact_names cn ON cn.owner_id=? AND cn.contact_id=u.id LEFT JOIN codes co ON co.user_id=u.id WHERE (c.user_a=? OR c.user_b=?) AND NOT EXISTS(SELECT 1 FROM blocks b WHERE (b.blocker_id=? AND b.blocked_id=u.id) OR (b.blocker_id=u.id AND b.blocked_id=?)) ORDER BY COALESCE(last_message_at,c.created_at) DESC").all(id,id,id,id,id,id,id,id,id,id,id);
