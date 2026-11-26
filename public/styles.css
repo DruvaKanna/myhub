@@ -142,3 +142,17 @@
 :root[data-theme="white"] .outgoing-item{color:#59677d}
 :root[data-theme="white"] .theme-options button{color:#182235}
 :root[data-theme="white"] .warning-modal p{color:#39485d}
+
+.game-launch-button{border:1px solid rgba(141,183,255,.35);background:rgba(91,139,211,.14);color:#b9d4ff;border-radius:8px;padding:8px 11px;font-size:10px;font-weight:800;cursor:pointer}
+.game-launch-button:hover{background:rgba(91,139,211,.25)}
+.game-modal{width:min(430px,94vw);padding:23px;background:var(--theme-panel,#13243d);border:1px solid var(--line);border-radius:18px;box-shadow:0 30px 100px rgba(0,0,0,.45)}
+.game-modal h2{margin:5px 0 0;font-size:25px}
+.game-status{min-height:38px;color:var(--muted);font-size:12px;line-height:1.5;margin:17px 0 12px}
+.game-invite-actions{display:flex;gap:9px;margin-bottom:14px}
+.game-board{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:330px;margin:12px auto}
+.game-cell{aspect-ratio:1;border:1px solid rgba(141,183,255,.24);border-radius:12px;background:var(--theme-card,#1b3354);color:var(--text);font-size:clamp(38px,10vw,64px);font-weight:800;cursor:pointer}
+.game-cell:disabled{cursor:default;opacity:.9}
+.game-cell:not(:disabled):hover{border-color:var(--blue);background:rgba(104,151,222,.2)}
+.game-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:15px}
+.game-role{color:var(--muted);font-size:10px}
+@media(max-width:420px){.game-modal{padding:17px}.game-board{gap:6px}.game-cell{border-radius:9px}}
