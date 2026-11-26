@@ -1,7 +1,7 @@
 (() => {
 "use strict";
 const $=s=>document.querySelector(s);
-const state={authMode:"login",user:null,code:"",codeExpiresAt:0,chats:[],activeUser:null,messages:[],socket:null,selectedFiles:[],toastTimer:null,expiryTimer:null};
+const state={authMode:"login",user:null,code:"",chats:[],activeUser:null,messages:[],socket:null,selectedFiles:[],toastTimer:null};
 async function api(url,options){
   const opts=Object.assign({credentials:"same-origin"},options||{});opts.headers=Object.assign({},opts.headers||{});
   if(opts.body&&!(opts.body instanceof FormData)&&typeof opts.body!=="string"){opts.headers["Content-Type"]="application/json";opts.body=JSON.stringify(opts.body);}
@@ -25,11 +25,11 @@ async function handleAuth(event){
   const payload={username:$("#auth-username").value.trim(),email:$("#auth-email").value.trim(),password:$("#auth-password").value};
   try{
     const result=await api(state.authMode==="register"?"/api/auth/register":"/api/auth/login",{method:"POST",body:payload});
-    state.user=result.user;state.code=result.code;state.codeExpiresAt=result.codeExpiresAt;$("#auth-password").value="";await startApp();
+    state.user=result.user;state.code=result.code;$("#auth-password").value="";await startApp();
   }catch(error){$("#auth-error").textContent=error.message;}
 }
 async function boot(){
-  try{const result=await api("/api/me");state.user=result.user;state.code=result.code;state.codeExpiresAt=result.codeExpiresAt;await startApp();}
+  try{const result=await api("/api/me");state.user=result.user;state.code=result.code;await startApp();}
   catch{$("#auth-screen").classList.remove("hidden");$("#app-screen").classList.add("hidden");}
 }
 async function startApp(){
@@ -38,8 +38,20 @@ async function startApp(){
   renderCode();setupSocket();await Promise.all([loadChats(),loadConnections(),loadSettings()]);
 }
 function renderCode(){$("#my-code").textContent=state.code||"·····";$("#code-status").textContent="Your code stays active until you change it.";}
-function updateExpiry(){}
-async function rotateCode(){try{const result=await api("/api/code/change",{method:"POST",body:{}});state.code=result.code;state.codeExpiresAt=null;renderCode();toast("Your code changed and your contacts were removed.");}catch(error){toast(error.message);}}
+async function rotateCode(){
+  try{
+    const result=await api("/api/code/change",{method:"POST",body:{}});
+    state.code=result.code;
+    state.activeUser=null;
+    state.messages=[];
+    renderCode();
+    $("#chat-view").classList.add("hidden");
+    $("#empty-state").classList.remove("hidden");
+    await Promise.all([loadChats(),loadConnections()]);
+    toast("Your code changed. Your contacts and their chat history were removed.");
+    return true;
+  }catch(error){toast(error.message);return false;}
+}
 async function copyCode(){
   if(!state.code)return;
   try{await navigator.clipboard.writeText(state.code);toast("Code copied.");}
@@ -88,14 +100,16 @@ function renderChats(){
     const button=document.createElement("button");button.type="button";button.className="chat-item"+(state.activeUser&&state.activeUser.id===person.id?" active":"");
     const avatar=document.createElement("span");avatar.className="avatar";avatar.textContent=initials(person.username);
     const copy=document.createElement("span");copy.className="chat-item-copy";
-    const name=document.createElement("strong");name.textContent=person.display_name||person.username;const code=document.createElement("span");code.className="contact-code";code.textContent=person.connection_code?"· "+person.connection_code:"";
-    const preview=document.createElement("span");preview.textContent=person.last_message||"Start a conversation";
-    copy.append(name,code,preview);button.append(avatar,copy);button.addEventListener("click",()=>selectChat(person));list.append(button);
+    const titleRow=document.createElement("span");titleRow.className="contact-title-row";
+    const name=document.createElement("strong");name.textContent=person.display_name||person.username;
+    const code=document.createElement("span");code.className="contact-code";code.textContent=person.connection_code||"";
+    const preview=document.createElement("span");preview.className="chat-preview";preview.textContent=person.last_message||"Start a conversation";
+    titleRow.append(name,code);copy.append(titleRow,preview);button.append(avatar,copy);button.addEventListener("click",()=>selectChat(person));list.append(button);
   });
 }
 async function selectChat(person){
   state.activeUser=person;$("#empty-state").classList.add("hidden");$("#chat-view").classList.remove("hidden");
-  $("#active-name").textContent=person.display_name||person.username;$("#active-code").textContent=person.connection_code||"";$("#active-avatar").textContent=initials(person.display_name||person.username);$("#topbar-title").textContent=person.username;
+  $("#active-name").textContent=person.display_name||person.username;$("#active-code").textContent=person.connection_code||"";$("#active-avatar").textContent=initials(person.display_name||person.username);$("#topbar-title").textContent=person.display_name||person.username;
   renderChats();await loadMessages();closeMobileSidebar();$("#message-input").focus();
 }
 async function loadMessages(){
@@ -165,7 +179,7 @@ async function reportActiveUser(){
   try{const result=await api("/api/users/"+state.activeUser.id+"/report",{method:"POST",body:{reason}});toast(result.message);}
   catch(error){toast(error.message);}
 }
-async function refreshMe(){const result=await api("/api/me");state.user=result.user;state.code=result.code;state.codeExpiresAt=null;renderCode();}
+async function refreshMe(){const result=await api("/api/me");state.user=result.user;state.code=result.code;renderCode();}
 function setupSocket(){
   if(state.socket)state.socket.disconnect();if(typeof window.io!=="function")return;
   state.socket=window.io();
@@ -189,10 +203,10 @@ function bindEvents(){
   $("#theme-options").addEventListener("click",event=>{const button=event.target.closest("[data-theme-choice]");if(button)saveTheme(button.dataset.themeChoice);});
   $("#change-code-settings").addEventListener("click",()=>{$("#settings-modal").classList.add("hidden");$("#code-warning-modal").classList.remove("hidden");});
   $("#warning-back").addEventListener("click",()=>$("#code-warning-modal").classList.add("hidden"));
-  $("#warning-yes").addEventListener("click",async()=>{$("#code-warning-modal").classList.add("hidden");await rotateCode();state.activeUser=null;$("#chat-view").classList.add("hidden");$("#empty-state").classList.remove("hidden");await Promise.all([loadChats(),loadConnections()]);});
+  $("#warning-yes").addEventListener("click",async()=>{$("#code-warning-modal").classList.add("hidden");await rotateCode();});
   $("#logout-button").addEventListener("click",async()=>{
     try{await api("/api/auth/logout",{method:"POST",body:{}});}catch{}
-    if(state.socket)state.socket.disconnect();clearInterval(state.expiryTimer);state.user=null;state.activeUser=null;
+    if(state.socket)state.socket.disconnect();state.user=null;state.activeUser=null;
     $("#app-screen").classList.add("hidden");$("#auth-screen").classList.remove("hidden");setAuthMode("login");toast("You have signed out.");
   });
   document.querySelectorAll(".sidebar-tab").forEach(button=>button.addEventListener("click",()=>setSidebarTab(button.dataset.tab)));
