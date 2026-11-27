@@ -34,11 +34,34 @@
 .exact-layout .view{min-height:420px}
 @media(max-width:980px){.exact-layout{grid-template-columns:210px 1fr}.exact-inspector{grid-column:1/-1;max-height:340px}}
 @media(max-width:680px){.exact-layout{height:auto;display:flex;flex-direction:column}.exact-layout .center{height:620px}.exact-inspector{max-height:none}}
+
+/* v7 workspace and editor enhancements */
+.tree-list{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.tree-row{display:flex;align-items:center;gap:5px;padding:6px 7px;border:1px solid #3b5577;background:#111f34;border-radius:8px;min-width:0}
+.tree-row.selected{border-color:#69c6ff;background:#1d3856}
+.tree-select{flex:1;min-width:0;text-align:left;background:transparent;border:0;padding:5px 4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px}
+.tree-eye{padding:5px 7px;min-width:32px;font-size:12px}
+.tree-empty{padding:12px;border:1px dashed #496887;border-radius:8px;color:#a8bdd5;font-size:11px;text-align:center}
+.sketch-panel{padding:12px;border:1px solid #45617f;background:#14243a;border-radius:11px;margin:10px 0}
+.sketch-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sketch-grid label{display:block;color:#aebfd3;font-size:10px}
+.sketch-grid input,.sketch-grid select{width:100%;margin-top:4px;background:#101c30;color:white;border:1px solid #4b6687;border-radius:7px;padding:8px}
+.sketch-panel p{margin:2px 0 10px}
+.upload-small{padding:4px 7px;font-size:9px;color:#19314b;background:#d8e9fa;border-color:#b8d3ee}
+.drawing-heading{height:38px;gap:6px}
+.drawing-heading .heading-text{display:flex;flex-direction:column;gap:2px}
+.drawing-heading .heading-text strong{font-size:10px}
+.drawing-heading .heading-text span{font-size:9px;letter-spacing:0;color:#62748a}
+.drawing-canvas{height:calc(100% - 38px)}
+.exact-layout .section{margin-top:8px}
+.sketch-panel button{margin-top:8px}
+.tool.wide{grid-column:1/-1;min-height:55px}
+@media(max-width:680px){.sketch-grid{grid-template-columns:1fr 1fr}.drawing-heading{height:38px}.drawing-canvas{height:calc(100% - 38px)}}
 </style></head><body>
 <header class="top"><div class="brand"><div class="mark">◇</div><div>SimuWorld<small>3D CAD · MULTI-VIEW DESIGN · ENGINEERING</small></div></div><div class="actions studio-switch"><button id="cadMode" class="active">🧩 Kid CAD Studio</button><button id="exactMode">📐 Exact CAD Studio</button><button id="aiMode">✏ AI 2D → 3D Studio</button></div><div class="actions"><button id="save">Save project</button><button id="open">Open project</button><button id="undo">↶ Undo</button><button id="redo">↷ Redo</button><button class="primary" id="print">Optional 3D print preparation</button><input id="file" type="file" accept=".json,application/json" hidden></div></header>
 <div class="layout workspace active" id="cadWorkspace"><aside class="panel left"><div class="section">CREATE SOMETHING AWESOME</div><div class="intro">Pick a shape or machine part, then customize it. Start simple and build up to a whole invention.</div><div class="section">BASIC SHAPES</div><div class="toolgrid" id="shapes"></div><div class="divider"></div><div class="section">MECHANICAL PARTS</div><div class="toolgrid" id="mechanical"></div><div class="divider"></div><div class="section">BUILDING TOOLS</div><div class="toolgrid"><button class="tool" id="duplicate"><span class="emoji">▣</span>Duplicate<small>Make another copy</small></button><button class="tool" id="delete"><span class="emoji">🗑️</span>Delete<small>Remove selection</small></button><button class="tool" id="group"><span class="emoji">🧩</span>Group<small>Join selected parts</small></button><button class="tool" id="ungroup"><span class="emoji">✂️</span>Ungroup<small>Separate group</small></button></div><p class="note">Tip: Click a part to select it. Drag in empty space to orbit the camera; scroll to zoom.</p></aside>
 <main class="center"><div class="panel bar"><button id="move" class="primary">✥ Move</button><button id="rotate">⟳ Rotate</button><button id="scale">⤢ Resize</button><button id="home">◎ Home view</button><button id="grid">Grid: On</button><button id="measure">📏 Measure</button><button id="simulate" class="good">▶ Spin test</button><button id="transferExact">⇄ Transfer to Exact CAD Studio</button></div><div class="view" id="view"><div class="overlay">3D DESIGN SPACE <span class="badge" id="modeBadge">SELECT</span></div><div class="tip">Click an object to select · Drag selected object to move · Right-drag to orbit · Scroll to zoom</div></div><div class="panel status" id="status">Ready to create · 0 parts in your project</div></main>
-<aside class="panel right"><div class="section">DESIGN INSPECTOR</div><h3 id="selectedName">Nothing selected yet</h3><div id="selectedType" class="note">Choose a shape or mechanical part to begin.</div><div class="divider"></div><div class="section">POSITION</div><div class="xyz"><label>X<input id="px" type="number" step=".1" value="0"></label><label>Y<input id="py" type="number" step=".1" value="0"></label><label>Z<input id="pz" type="number" step=".1" value="0"></label></div><div class="section" style="margin-top:18px">SIZE</div><div class="field"><label>Width <span id="sxv">2.0</span></label><input id="sx" type="range" min=".2" max="8" step=".1" value="2"></div><div class="field"><label>Height <span id="syv">2.0</span></label><input id="sy" type="range" min=".2" max="8" step=".1" value="2"></div><div class="field"><label>Depth <span id="szv">2.0</span></label><input id="sz" type="range" min=".2" max="8" step=".1" value="2"></div><div class="section">ROTATION</div><div class="field"><label>Turn around Y <span id="ryv">0°</span></label><input id="ry" type="range" min="0" max="360" step="1" value="0"></div><div class="field"><label>Color</label><input id="color" type="color" value="#4da8ff" style="width:100%;height:38px;background:#101c30;border:1px solid #4b6687;border-radius:8px;padding:4px"></div><div class="section">REAL-WORLD DIMENSIONS</div>
+<aside class="panel right"><div class="section">DESIGN INSPECTOR</div><h3 id="selectedName">Nothing selected yet</h3><div id="selectedType" class="note">Choose a shape or mechanical part to begin.</div><div class="divider"></div><div class="section">POSITION</div><div class="xyz"><label>X<input id="px" type="number" step=".1" value="0"></label><label>Y<input id="py" type="number" step=".1" value="0"></label><label>Z<input id="pz" type="number" step=".1" value="0"></label></div><div class="section" style="margin-top:18px">SIZE</div><div class="field"><label>Width <span id="sxv">2.0</span></label><input id="sx" type="range" min=".2" max="8" step=".1" value="2"></div><div class="field"><label>Height <span id="syv">2.0</span></label><input id="sy" type="range" min=".2" max="8" step=".1" value="2"></div><div class="field"><label>Depth <span id="szv">2.0</span></label><input id="sz" type="range" min=".2" max="8" step=".1" value="2"></div><div class="section">ROTATION</div><div class="field"><label>Turn around Y <span id="ryv">0°</span></label><input id="ry" type="range" min="0" max="360" step="1" value="0"></div><div class="field"><label>Color</label><input id="color" type="color" value="#4da8ff" style="width:100%;height:38px;background:#101c30;border:1px solid #4b6687;border-radius:8px;padding:4px"></div><div class="section">PROJECT MODEL TREE</div><div class="tree-list" id="kidObjectTree"><div class="tree-empty">Your parts will appear here.</div></div><div class="divider"></div><div class="section">REAL-WORLD DIMENSIONS</div>
 <div class="dimension-grid"><div class="dimension"><span>Length</span><strong id="dimLength">—</strong></div><div class="dimension"><span>Height</span><strong id="dimHeight">—</strong></div><div class="dimension"><span>Depth</span><strong id="dimDepth">—</strong></div></div>
 <div class="field"><label>Display units</label><select id="unitSystem"><option value="cm">Centimeters (cm)</option><option value="mm">Millimeters (mm)</option><option value="m">Meters (m)</option><option value="in">Inches (in)</option><option value="ft">Feet (ft)</option></select></div>
 <p class="note">Current prototype reference: 1 design unit = 10 cm. Dimensions are estimates; a calibration control is needed before manufacturing use.</p>
@@ -72,10 +95,10 @@
     <button id="downloadDrawing">↓ Export four-view sheet</button>
   </div>
   <div class="view-board" id="viewBoard">
-    <div class="drawing-card active" data-view="top"><div class="drawing-heading"><strong>TOP VIEW</strong><span>Looking down</span></div><canvas class="drawing-canvas" id="drawTop" width="480" height="320"></canvas></div>
-    <div class="drawing-card" data-view="bottom"><div class="drawing-heading"><strong>BOTTOM VIEW</strong><span>Looking underneath</span></div><canvas class="drawing-canvas" id="drawBottom" width="480" height="320"></canvas></div>
-    <div class="drawing-card" data-view="left"><div class="drawing-heading"><strong>LEFT SIDE</strong><span>One side profile</span></div><canvas class="drawing-canvas" id="drawLeft" width="480" height="320"></canvas></div>
-    <div class="drawing-card" data-view="right"><div class="drawing-heading"><strong>RIGHT SIDE</strong><span>Other side profile</span></div><canvas class="drawing-canvas" id="drawRight" width="480" height="320"></canvas></div>
+    <div class="drawing-card active" data-view="top"><div class="drawing-heading"><div class="heading-text"><strong>TOP VIEW</strong><span>Looking down</span></div><button class="upload-small" id="uploadTopButton" type="button">Upload image</button><input type="file" id="uploadTopFile" accept="image/png,image/jpeg,image/webp" hidden></div><canvas class="drawing-canvas" id="drawTop" width="480" height="320"></canvas></div>
+    <div class="drawing-card" data-view="bottom"><div class="drawing-heading"><div class="heading-text"><strong>BOTTOM VIEW</strong><span>Looking underneath</span></div><button class="upload-small" id="uploadBottomButton" type="button">Upload image</button><input type="file" id="uploadBottomFile" accept="image/png,image/jpeg,image/webp" hidden></div><canvas class="drawing-canvas" id="drawBottom" width="480" height="320"></canvas></div>
+    <div class="drawing-card" data-view="left"><div class="drawing-heading"><div class="heading-text"><strong>LEFT SIDE</strong><span>One side profile</span></div><button class="upload-small" id="uploadLeftButton" type="button">Upload image</button><input type="file" id="uploadLeftFile" accept="image/png,image/jpeg,image/webp" hidden></div><canvas class="drawing-canvas" id="drawLeft" width="480" height="320"></canvas></div>
+    <div class="drawing-card" data-view="right"><div class="drawing-heading"><div class="heading-text"><strong>RIGHT SIDE</strong><span>Other side profile</span></div><button class="upload-small" id="uploadRightButton" type="button">Upload image</button><input type="file" id="uploadRightFile" accept="image/png,image/jpeg,image/webp" hidden></div><canvas class="drawing-canvas" id="drawRight" width="480" height="320"></canvas></div>
   </div>
   <div class="panel ai-status" id="aiStatus">Ready · Draw the top, bottom, left and right views. Select a drawing box to work in it.</div>
 </main>
@@ -108,15 +131,28 @@
     <div class="section">PRECISION PART LIBRARY</div>
     <div class="toolgrid" id="exactParts"></div>
     <div class="divider"></div>
+    <div class="section">SKETCH → EXTRUDE</div>
+    <div class="sketch-panel">
+      <p class="note">Create a dimensioned 2D profile and extrude it into a 3D solid in the shared viewport.</p>
+      <div class="sketch-grid">
+        <label>Profile<select id="exactProfile"><option value="rectangle">Rectangle</option><option value="circle">Circle</option><option value="triangle">Triangle</option><option value="hexagon">Hexagon</option><option value="ring">Ring / tube</option></select></label>
+        <label>Plane<select id="exactPlane"><option value="XY">XY plane</option><option value="XZ">XZ plane</option><option value="YZ">YZ plane</option></select></label>
+        <label>Width / diameter (mm)<input id="profileWidth" type="number" min="0.1" step="0.1" value="60"></label>
+        <label>Height (mm)<input id="profileHeight" type="number" min="0.1" step="0.1" value="40"></label>
+        <label>Extrusion depth (mm)<input id="profileDepth" type="number" min="0.1" step="0.1" value="12"></label>
+        <label>Wall thickness (mm)<input id="profileWall" type="number" min="0.1" step="0.1" value="4"></label>
+      </div>
+      <button id="createExtrusion" class="primary" style="width:100%">＋ Create extruded feature</button>
+    </div>
     <div class="section">PRECISION UTILITIES</div>
     <div class="toolgrid">
       <button class="tool" id="snapSelected"><span class="emoji">⌗</span>Snap to grid<small>Round position to step</small></button>
       <button class="tool" id="centerSelected"><span class="emoji">◎</span>Center at origin<small>Move selected part to 0,0,0</small></button>
       <button class="tool" id="exactDuplicate"><span class="emoji">▣</span>Duplicate part<small>Copy selected component</small></button>
-      <button class="tool" id="exactDelete"><span class="emoji">⌫</span>Delete part<small>Remove selected component</small></button>
+      <button class="tool" id="exactDelete"><span class="emoji">⌫</span>Delete part<small>Remove selected component</small></button><button class="tool" id="mirrorX"><span class="emoji">↔</span>Mirror X<small>Duplicate across X=0</small></button><button class="tool" id="mirrorZ"><span class="emoji">↕</span>Mirror Z<small>Duplicate across Z=0</small></button><button class="tool" id="linearArray"><span class="emoji">▥</span>Linear array<small>Make repeated copies</small></button>
     </div>
     <div class="divider"></div>
-    <div class="field"><label>Position snap step (mm)</label><input id="exactSnapStep" type="number" min="0.1" step="0.1" value="1"></div>
+    <div class="field"><label>Position snap step (mm)</label><input id="exactSnapStep" type="number" min="0.1" step="0.1" value="1"></div><div class="field"><label>Array copies</label><input id="arrayCount" type="number" min="2" max="20" step="1" value="3"></div><div class="field"><label>Array spacing (mm)</label><input id="arraySpacing" type="number" min="0.1" step="0.1" value="25"></div>
     <p class="note">Exact CAD uses numeric controls in millimeters and degrees. This prototype provides precise object transforms; fully parametric sketches, feature history and engineering-grade constraints are future engine work.</p>
   </aside>
   <main class="center">
@@ -135,7 +171,7 @@
   <aside class="panel right exact-inspector">
     <div class="section">PRECISION INSPECTOR</div>
     <h3 id="exactSelectedName">Nothing selected</h3>
-    <p class="note" id="exactSelectedType">Select a component in the viewport or add one from the library.</p>
+    <p class="note" id="exactSelectedType">Select a component in the viewport or add one from the library.</p><div class="divider"></div><div class="section">MODEL / FEATURE TREE</div><div class="tree-list" id="exactFeatureTree"><div class="tree-empty">Your model features will appear here.</div></div>
     <div class="divider"></div>
     <div class="section">POSITION · MILLIMETERS</div>
     <div class="xyz exact-xyz">
@@ -213,17 +249,26 @@ case'spring':{let pts=[];for(let i=0;i<=180;i++){let a=i/180*Math.PI*2*7;pts.pus
 case'motor':mesh(group,new THREE.CylinderGeometry(.72,.72,1.8,48),blue,[0,1.1,0]).rotation.z=Math.PI/2;mesh(group,new THREE.CylinderGeometry(.13,.13,1.1,32),steel,[1.35,1.1,0]).rotation.z=Math.PI/2;mesh(group,new THREE.BoxGeometry(.6,.2,.6),dark,[-.2,2.08,0]);break;
 }
 group.userData.color=d.id==='gear'?'#ffc85a':d.id==='spring'?'#ff965c':d.id==='bearing'?'#aebdca':'#4da8ff';return group}
-function say(t){const message=t+' · '+objects.length+' parts in your project';$('status').textContent=message;if($('exactStatus'))$('exactStatus').textContent=message}
-function snapshot(){return objects.map(o=>({id:o.userData.def.id,p:o.position.toArray(),r:o.rotation.toArray(),s:o.scale.toArray(),color:o.userData.color,aiGrid:o.userData.aiGrid||null,aiStyle:o.userData.aiStyle||null,aiDims:o.userData.aiDims||null}))}
+function updateModelTrees(){
+ const lists=[$('kidObjectTree'),$('exactFeatureTree')].filter(Boolean);
+ lists.forEach(list=>{list.innerHTML='';if(!objects.length){list.innerHTML='<div class="tree-empty">No components yet. Add a shape or create a feature.</div>';return}
+  objects.forEach((o,index)=>{const row=document.createElement('div');row.className='tree-row'+(o===selected?' selected':'');
+   const choose=document.createElement('button');choose.className='tree-select';choose.type='button';choose.textContent=(index+1)+'. '+o.userData.def.name;choose.title=o.userData.def.desc||o.userData.def.name;choose.onclick=()=>select(o);
+   const eye=document.createElement('button');eye.className='tree-eye';eye.type='button';eye.textContent=o.visible?'◉':'○';eye.title=o.visible?'Hide component':'Show component';eye.onclick=()=>{o.visible=!o.visible;updateModelTrees();say(o.visible?'Component shown':'Component hidden')};row.append(choose,eye);list.appendChild(row);
+  });
+ });
+}
+function say(t){const message=t+' · '+objects.length+' parts in your project';$('status').textContent=message;if($('exactStatus'))$('exactStatus').textContent=message;updateModelTrees()}
+function snapshot(){return objects.map(o=>({id:o.userData.def.id,p:o.position.toArray(),r:o.rotation.toArray(),s:o.scale.toArray(),color:o.userData.color,aiGrid:o.userData.aiGrid||null,aiStyle:o.userData.aiStyle||null,aiDims:o.userData.aiDims||null,feature:o.userData.feature||null,visible:o.visible}))}
 function remember(){history.push(snapshot());if(history.length>60)history.shift();future=[]}
-function restore(data){objects.forEach(o=>scene.remove(o));objects=[];(data||[]).forEach(x=>{let d=defs.find(y=>y.id===x.id);if(!d&&x.id==='aiConcept'){let o=createAiModel(x.aiGrid,x.aiStyle,x.aiDims);if(!o)return;o.position.fromArray(x.p||[0,1.5,0]);o.rotation.fromArray(x.r||[0,0,0]);o.scale.fromArray(x.s||[1,1,1]);o.userData.color=x.color||o.userData.color;scene.add(o);objects.push(o);return}if(!d)return;let o=build(d);o.position.fromArray(x.p);o.rotation.fromArray(x.r);o.scale.fromArray(x.s);o.userData.color=x.color||'#4da8ff';o.traverse(m=>{if(m.isMesh)m.material=material(o.userData.color)});scene.add(o);objects.push(o)});select(null);say('Project loaded')}
-function add(d){remember();let o=build(d);o.position.set((Math.random()-.5)*2,0,(Math.random()-.5)*2);scene.add(o);objects.push(o);select(o);say(d.name+' added')}
-function select(o){selected=o;$('selectedName').textContent=o?o.userData.def.name:'Nothing selected yet';$('selectedType').textContent=o?o.userData.def.desc:'Choose a shape or mechanical part to begin.';if(!o){updateDimensions();syncExactInspector();return}for(let [id,v] of [['px',o.position.x],['py',o.position.y],['pz',o.position.z],['sx',o.scale.x],['sy',o.scale.y],['sz',o.scale.z],['ry',THREE.MathUtils.radToDeg(o.rotation.y)]])$(id).value=v;updateLabels();$('color').value=o.userData.color||'#4da8ff';updateDimensions();syncExactInspector()}
+function restore(data){objects.forEach(o=>scene.remove(o));objects=[];(data||[]).forEach(x=>{let d=defs.find(y=>y.id===x.id);if(!d&&x.id==='aiConcept'){let o=createAiModel(x.aiGrid,x.aiStyle,x.aiDims);if(!o)return;o.position.fromArray(x.p||[0,1.5,0]);o.rotation.fromArray(x.r||[0,0,0]);o.scale.fromArray(x.s||[1,1,1]);o.userData.color=x.color||o.userData.color;scene.add(o);objects.push(o);return}if(!d&&x.id==='customExtrude'&&x.feature){let o=createExtrusionFromData(x.feature);o.position.fromArray(x.p||[0,0,0]);o.rotation.fromArray(x.r||[0,0,0]);o.scale.fromArray(x.s||[1,1,1]);o.visible=x.visible!==false;o.userData.color=x.color||o.userData.color;scene.add(o);objects.push(o);return}if(!d)return;let o=build(d);o.position.fromArray(x.p);o.rotation.fromArray(x.r);o.scale.fromArray(x.s);o.userData.color=x.color||'#4da8ff';o.traverse(m=>{if(m.isMesh)m.material=material(o.userData.color)});o.visible=x.visible!==false;scene.add(o);objects.push(o)});select(null);updateModelTrees();say('Project loaded')}
+function add(d){remember();let o=build(d);o.position.set((Math.random()-.5)*2,0,(Math.random()-.5)*2);scene.add(o);objects.push(o);select(o);say(d.name+' added');updateModelTrees()}
+function select(o){selected=o;$('selectedName').textContent=o?o.userData.def.name:'Nothing selected yet';$('selectedType').textContent=o?o.userData.def.desc:'Choose a shape or mechanical part to begin.';if(!o){updateDimensions();syncExactInspector();updateModelTrees();return}for(let [id,v] of [['px',o.position.x],['py',o.position.y],['pz',o.position.z],['sx',o.scale.x],['sy',o.scale.y],['sz',o.scale.z],['ry',THREE.MathUtils.radToDeg(o.rotation.y)]])$(id).value=v;updateLabels();$('color').value=o.userData.color||'#4da8ff';updateDimensions();syncExactInspector();updateModelTrees()}
 function updateLabels(){for(let id of ['sx','sy','sz'])$(id+'v').textContent=(+$(id).value).toFixed(1);$('ryv').textContent=Math.round(+$('ry').value)+'°'}
 function edit(){if(!selected)return;remember();selected.position.set(+$('px').value,+$('py').value,+$('pz').value);selected.scale.set(+$('sx').value,+$('sy').value,+$('sz').value);selected.rotation.y=THREE.MathUtils.degToRad(+$('ry').value);selected.userData.color=$('color').value;selected.traverse(m=>{if(m.isMesh||m.isInstancedMesh)m.material=material(selected.userData.color)});updateLabels();updateDimensions()}
 for(const id of ['px','py','pz','sx','sy','sz','ry','color'])$(id).addEventListener('change',edit);
 for(const d of defs){let b=document.createElement('button');b.className='tool';b.innerHTML='<span class="emoji">'+d.emoji+'</span>'+d.name+'<small>'+d.desc+'</small>';b.onclick=()=>add(d);$(d.group==='shape'?'shapes':'mechanical').appendChild(b);let eb=document.createElement('button');eb.className='tool';eb.innerHTML='<span class="emoji">'+d.emoji+'</span>'+d.name+'<small>'+d.desc+'</small>';eb.onclick=()=>add(d);$('exactParts').appendChild(eb)}
-function removeSelected(){if(!selected)return;say('Removed '+selected.userData.def.name);scene.remove(selected);objects=objects.filter(o=>o!==selected);select(null)}
+function removeSelected(){if(!selected)return;const name=selected.userData.def.name;scene.remove(selected);objects=objects.filter(o=>o!==selected);select(null);say('Removed '+name);updateModelTrees()}
 $('delete').onclick=()=>{if(selected){remember();removeSelected()}};$('duplicate').onclick=()=>{if(selected){let d=selected.userData.def;remember();let o=selected.userData.ai?selected.clone(true):build(d);o.position.copy(selected.position).add(new THREE.Vector3(1,0,1));o.scale.copy(selected.scale);o.userData.color=selected.userData.color;o.traverse(m=>{if(m.isMesh||m.isInstancedMesh)m.material=material(o.userData.color)});scene.add(o);objects.push(o);select(o);say('Duplicated part')}};
 $('group').onclick=()=>{if(!selected)return say('Select a part first');say('Grouping is planned for a future update; parts remain independently editable')};$('ungroup').onclick=()=>say('Select a grouped assembly to ungroup it');
 $('move').onclick=()=>{mode='move';$('modeBadge').textContent='MOVE';say('Move tool selected')};$('rotate').onclick=()=>{mode='rotate';$('modeBadge').textContent='ROTATE';say('Rotate tool selected')};$('scale').onclick=()=>{mode='scale';$('modeBadge').textContent='RESIZE';say('Resize tool selected')};$('home').onclick=()=>{camera.position.set(12,11,15);controls.target.set(0,1,0);controls.update()};$('grid').onclick=()=>{gridOn=!gridOn;grid.visible=gridOn;$('grid').textContent='Grid: '+(gridOn?'On':'Off')};$('measure').onclick=()=>{measure=!measure;say(measure?'Measure mode: select two parts to compare centers':'Measure mode off')};
@@ -251,7 +296,25 @@ function restoreDrawings(data){Object.keys(drawViews).forEach(k=>{if(!data||!dat
 function pushDrawingHistory(){aiUndoStack.push(captureDrawings());if(aiUndoStack.length>30)aiUndoStack.shift();aiRedoStack=[]}
 function clearOneCanvas(id){const c=drawViews[id],ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height)}
 Object.keys(drawViews).forEach(k=>{const c=drawViews[k];clearOneCanvas(k);c.addEventListener('pointerdown',e=>{setActiveView(k);pushDrawingHistory();const r=c.getBoundingClientRect(),x=(e.clientX-r.left)*c.width/r.width,y=(e.clientY-r.top)*c.height/r.height,ctx=c.getContext('2d');painting={canvas:c,ctx:ctx};c.setPointerCapture(e.pointerId);ctx.beginPath();ctx.moveTo(x,y);ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle=drawMode==='erase'?'#ffffff':drawColor;ctx.lineWidth=brushWidth;ctx.lineTo(x+.01,y+.01);ctx.stroke()});c.addEventListener('pointermove',e=>{if(!painting||painting.canvas!==c)return;const r=c.getBoundingClientRect(),x=(e.clientX-r.left)*c.width/r.width,y=(e.clientY-r.top)*c.height/r.height;painting.ctx.lineTo(x,y);painting.ctx.stroke()});const stop=()=>{if(painting&&painting.canvas===c){painting.ctx.closePath();painting=null}};c.addEventListener('pointerup',stop);c.addEventListener('pointercancel',stop);c.addEventListener('pointerleave',stop)});
-$('outlineTool').onclick=()=>{drawMode='draw';$('outlineTool').classList.add('active');$('eraserTool').classList.remove('active')};
+
+const uploadViews=[['Top','top'],['Bottom','bottom'],['Left','left'],['Right','right']];
+for(const [cap,key] of uploadViews){
+ const button=$('upload'+cap+'Button'),input=$('upload'+cap+'File'),canvas=drawViews[key];
+ button.onclick=()=>input.click();
+ input.onchange=()=>{
+  const file=input.files&&input.files[0];if(!file)return;
+  if(!/^image\/(png|jpeg|webp)$/.test(file.type)){ $('aiStatus').textContent='Please choose a PNG, JPG or WebP image.';input.value='';return}
+  pushDrawingHistory();const url=URL.createObjectURL(file),image=new Image();
+  image.onload=()=>{
+   const ctx=canvas.getContext('2d'),scale=Math.min(canvas.width/image.width,canvas.height/image.height),w=image.width*scale,h=image.height*scale;
+   ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(image,(canvas.width-w)/2,(canvas.height-h)/2,w,h);
+   URL.revokeObjectURL(url);$('aiStatus').textContent='Uploaded image into '+key+' view · use a clear drawing on a plain or transparent background for best outline analysis.';
+  };
+  image.onerror=()=>{$('aiStatus').textContent='That image could not be opened.';URL.revokeObjectURL(url)};
+  image.src=url;input.value='';
+ };
+}
+\n$('outlineTool').onclick=$('outlineTool').onclick=()=>{drawMode='draw';$('outlineTool').classList.add('active');$('eraserTool').classList.remove('active')};
 $('eraserTool').onclick=()=>{drawMode='erase';$('eraserTool').classList.add('active');$('outlineTool').classList.remove('active')};
 $('drawColor').oninput=e=>{drawColor=e.target.value;drawMode='draw';$('outlineTool').classList.add('active');$('eraserTool').classList.remove('active')};
 $('brushSize').oninput=e=>{$('brushValue').textContent=e.target.value+' px';brushWidth=+e.target.value};
@@ -358,7 +421,50 @@ function updateDimensions(){
 }
 
 
-function baseLocalSize(o){
+
+let customFeatureCounter=1;
+function createExtrusionFromData(p){
+ const w=Math.max(.1,p.width)/100,h=Math.max(.1,p.height)/100,depth=Math.max(.1,p.depth)/100,wall=Math.max(.1,p.wall||2)/100;
+ const shape=new THREE.Shape();
+ if(p.profile==='circle'){shape.absarc(0,0,w/2,0,Math.PI*2,false)}
+ else if(p.profile==='ring'){
+  shape.absarc(0,0,w/2,0,Math.PI*2,false);
+  const hole=new THREE.Path();hole.absarc(0,0,Math.max(.02,w/2-wall),0,Math.PI*2,true);shape.holes.push(hole);
+ }else{
+  let pts=[];
+  if(p.profile==='triangle')pts=[[-w/2,-h/2],[w/2,-h/2],[0,h/2]];
+  else if(p.profile==='hexagon'){for(let i=0;i<6;i++){let a=Math.PI/3*i;pts.push([Math.cos(a)*w/2,Math.sin(a)*w/2])}}
+  else pts=[[-w/2,-h/2],[w/2,-h/2],[w/2,h/2],[-w/2,h/2]];
+  shape.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<pts.length;i++)shape.lineTo(pts[i][0],pts[i][1]);shape.closePath();
+ }
+ const geo=new THREE.ExtrudeGeometry(shape,{depth:depth,bevelEnabled:false,curveSegments:48,steps:1});
+ if(p.plane==='XZ')geo.rotateX(Math.PI/2);else if(p.plane==='YZ')geo.rotateY(Math.PI/2);
+ geo.computeVertexNormals();
+ const mat=material(0x69bfff),solid=new THREE.Mesh(geo,mat);solid.castShadow=true;solid.receiveShadow=true;
+ const g=new THREE.Group();g.add(solid);g.userData={def:{id:'customExtrude',name:(p.profile||'Profile')+' Extrusion '+(customFeatureCounter++),desc:'Extruded '+p.profile+' profile · '+p.depth+' mm depth'},color:'#69bfff',feature:{...p}};return g;
+}
+function createExtrusion(){
+ const p={profile:$('exactProfile').value,plane:$('exactPlane').value,width:Number($('profileWidth').value),height:Number($('profileHeight').value),depth:Number($('profileDepth').value),wall:Number($('profileWall').value)};
+ if([p.width,p.height,p.depth,p.wall].some(v=>!Number.isFinite(v)||v<=0)){say('Enter positive sketch dimensions');return}
+ if(p.profile==='ring'&&p.wall>=p.width/2){say('Ring wall thickness must be smaller than its radius');return}
+ remember();const o=createExtrusionFromData(p);scene.add(o);objects.push(o);select(o);say('Created '+p.profile+' extrusion · '+p.depth+' mm depth');
+}
+$('createExtrusion').onclick=createExtrusion;
+function duplicateSelectedAt(position,nameSuffix){
+ if(!selected)return null;
+ const clone=selected.clone(true);clone.position.copy(position);clone.userData={...selected.userData,def:{...selected.userData.def,name:selected.userData.def.name+(nameSuffix||' copy')}};
+ clone.traverse(m=>{if(m.isMesh||m.isInstancedMesh)m.material=material(clone.userData.color||'#4da8ff')});
+ scene.add(clone);objects.push(clone);return clone;
+}
+$('mirrorX').onclick=()=>{if(!selected)return say('Select a component to mirror');remember();const p=selected.position.clone();p.x=-p.x;duplicateSelectedAt(p,' · mirror X');select(objects[objects.length-1]);say('Created mirrored-position copy across X=0')};
+$('mirrorZ').onclick=()=>{if(!selected)return say('Select a component to mirror');remember();const p=selected.position.clone();p.z=-p.z;duplicateSelectedAt(p,' · mirror Z');select(objects[objects.length-1]);say('Created mirrored-position copy across Z=0')};
+$('linearArray').onclick=()=>{
+ if(!selected)return say('Select a component to array');
+ const count=Math.max(2,Math.min(20,Math.floor(Number($('arrayCount').value)||3))),spacing=Math.max(.1,Number($('arraySpacing').value)||25)/100,origin=selected.position.clone();
+ remember();for(let i=1;i<count;i++){const p=origin.clone();p.x+=spacing*i;duplicateSelectedAt(p,' · array '+(i+1))}
+ say('Created linear array with '+count+' components');updateModelTrees();
+};
+\nfunction baseLocalSize(o){function baseLocalSize(o){
  const p=o.position.clone(),r=o.rotation.clone(),s=o.scale.clone();
  o.position.set(0,0,0);o.rotation.set(0,0,0);o.scale.set(1,1,1);o.updateMatrixWorld(true);
  const box=new THREE.Box3().setFromObject(o),size=box.getSize(new THREE.Vector3());
@@ -410,7 +516,7 @@ $('exactMeasure').onclick=()=>{$('measure').click();$('exactMeasure').classList.
 const ray=new THREE.Raycaster(),mouse=new THREE.Vector2(),plane=new THREE.Plane(new THREE.Vector3(0,1,0),0),hit=new THREE.Vector3();let drag=null,offset=new THREE.Vector3(),lastTap=0;
 function setRay(e){let r=renderer.domElement.getBoundingClientRect();mouse.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);ray.setFromCamera(mouse,camera)}
 renderer.domElement.addEventListener('pointerdown',e=>{setRay(e);let hits=ray.intersectObjects(objects,true);let o=null;if(hits.length){o=hits[0].object;while(o.parent&&!objects.includes(o))o=o.parent}if(o){if(measure&&selected&&selected!==o){let dist=selected.position.distanceTo(o.position);say('Center-to-center distance: '+dist.toFixed(2)+' design units');measure=false;return}select(o);if(e.button===0){drag=o;controls.enabled=false;ray.ray.intersectPlane(plane,hit);offset.copy(o.position).sub(hit)}}else if(e.button===0){select(null)}});
-renderer.domElement.addEventListener('pointermove',e=>{if(!drag)return;setRay(e);if(!ray.ray.intersectPlane(plane,hit))return;if(mode==='move'){drag.position.set(hit.x+offset.x,drag.position.y,hit.z+offset.z);$('px').value=drag.position.x;$('pz').value=drag.position.z}else if(mode==='rotate'){drag.rotation.y+=.015}else if(mode==='scale'){let s=Math.max(.2,drag.scale.x+(e.movementX-e.movementY)*.005);drag.scale.setScalar(s);$('sx').value=$('sy').value=$('sz').value=s}updateLabels();syncExactInspector()});
+renderer.domElement.addEventListener('pointermove',e=>{if(!drag)return;setRay(e);if(!ray.ray.intersectPlane(plane,hit))return;if(mode==='move'){drag.position.set(hit.x+offset.x,drag.position.y,hit.z+offset.z);$('px').value=drag.position.x;$('pz').value=drag.position.z}else if(mode==='rotate'){drag.rotation.y+=.015}else if(mode==='scale'){let s=Math.max(.2,drag.scale.x+(e.movementX-e.movementY)*.005);drag.scale.setScalar(s);$('sx').value=$('sy').value=$('sz').value=s}updateLabels();syncExactInspector();updateDimensions()});
 function end(){drag=null;controls.enabled=true}renderer.domElement.addEventListener('pointerup',end);renderer.domElement.addEventListener('pointerleave',end);
 function resize(){let w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h)}const viewportObserver=new ResizeObserver(resize);viewportObserver.observe($('view'));viewportObserver.observe($('exactView'));resize();
 try{let old=JSON.parse(localStorage.getItem('simuworld-kids-cad'));if(old){restore(old.objects||old);if(old.drawings)restoreDrawings(old.drawings);if(old.description!==undefined)$('aiDescription').value=old.description}}catch(e){}activateStudio('kid');
