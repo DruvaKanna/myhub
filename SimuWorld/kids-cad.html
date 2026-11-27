@@ -259,7 +259,7 @@ $('clearCurrent').onclick=()=>{pushDrawingHistory();clearOneCanvas(activeView);$
 $('clearAll').onclick=()=>{pushDrawingHistory();Object.keys(drawViews).forEach(clearOneCanvas);$('aiStatus').textContent='All four drawing views cleared'};
 $('aiUndo').onclick=()=>{if(!aiUndoStack.length){$('aiStatus').textContent='No drawing action to undo';return}aiRedoStack.push(captureDrawings());restoreDrawings(aiUndoStack.pop());$('aiStatus').textContent='Drawing undo'};
 $('aiRedo').onclick=()=>{if(!aiRedoStack.length){$('aiStatus').textContent='No drawing action to redo';return}aiUndoStack.push(captureDrawings());restoreDrawings(aiRedoStack.pop());$('aiStatus').textContent='Drawing redo'};
-$('newDrawing').onclick=()=>{pushDrawingHistory();Object.keys(drawViews).forEach(clearOneCanvas);$('aiDescription').value='';draftGrid=null;$('aiSuggestions').innerHTML='<div class="preview">Analyze your new drawings to see appearance choices.</div>';$('aiStatus').textContent='New four-view drawing started'};
+$('newDrawing').onclick=()=>{pushDrawingHistory();Object.keys(drawViews).forEach(clearOneCanvas);$('aiDescription').value='';draftGrid=null;pendingAiModel=null;$('aiTransferActions').classList.add('hidden');$('aiSuggestions').innerHTML='<div class="preview">Analyze your new drawings to see appearance choices.</div>';$('aiStatus').textContent='New four-view drawing started'};
 function hullFromCanvas(canvas){
  const ctx=canvas.getContext('2d'),w=canvas.width,h=canvas.height,data=ctx.getImageData(0,0,w,h).data,pts=[];
  for(let y=0;y<h;y+=3){for(let x=0;x<w;x+=3){const q=(y*w+x)*4;if(Math.min(data[q],data[q+1],data[q+2])<242)pts.push({x:x,y:y})}}
@@ -335,7 +335,7 @@ function activateStudio(name){
  Object.values(ids).forEach(id=>$(id).classList.remove('active'));
  $(ids[name]).classList.add('active');
  $('cadMode').classList.toggle('active',name==='kid');$('exactMode').classList.toggle('active',name==='exact');$('aiMode').classList.toggle('active',name==='ai');
- if(name==='kid'||name==='exact'){host=$(name==='kid'?'view':'exactView');host.appendChild(renderer.domElement);requestAnimationFrame(()=>{resize();controls.update();syncExactInspector()})}
+ if(name==='kid'||name==='exact'){host=$(name==='kid'?'view':'exactView');host.appendChild(renderer.domElement);if(name==='exact')$('exactModeBadge').textContent=mode.toUpperCase();requestAnimationFrame(()=>{resize();controls.update();syncExactInspector()})}
 }
 function transferAiModel(destination){
  if(!pendingAiModel){$('aiStatus').textContent='Create a 3D draft before choosing a destination.';return}
@@ -404,8 +404,8 @@ $('exactMove').onclick=()=>{$('move').click();$('exactModeBadge').textContent='M
 $('exactRotate').onclick=()=>{$('rotate').click();$('exactModeBadge').textContent='ROTATE'};
 $('exactScale').onclick=()=>{$('scale').click();$('exactModeBadge').textContent='RESIZE'};
 $('exactHome').onclick=()=>$('home').click();
-$('exactGrid').onclick=()=>$('grid').click();
-$('exactMeasure').onclick=()=>$('measure').click();
+$('exactGrid').onclick=()=>{$('grid').click();$('exactGrid').textContent=$('grid').textContent};
+$('exactMeasure').onclick=()=>{$('measure').click();$('exactMeasure').classList.toggle('active',measure)};
 
 const ray=new THREE.Raycaster(),mouse=new THREE.Vector2(),plane=new THREE.Plane(new THREE.Vector3(0,1,0),0),hit=new THREE.Vector3();let drag=null,offset=new THREE.Vector3(),lastTap=0;
 function setRay(e){let r=renderer.domElement.getBoundingClientRect();mouse.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);ray.setFromCamera(mouse,camera)}
