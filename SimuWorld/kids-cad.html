@@ -450,14 +450,15 @@ function createExtrusion(){
  remember();const o=createExtrusionFromData(p);scene.add(o);objects.push(o);select(o);say('Created '+p.profile+' extrusion · '+p.depth+' mm depth');
 }
 $('createExtrusion').onclick=createExtrusion;
-function duplicateSelectedAt(position,nameSuffix){
+function duplicateSelectedAt(position,nameSuffix,flipAxis){
  if(!selected)return null;
  const clone=selected.clone(true);clone.position.copy(position);clone.userData={...selected.userData,def:{...selected.userData.def,name:selected.userData.def.name+(nameSuffix||' copy')}};
+ if(flipAxis==='x')clone.scale.x*=-1;if(flipAxis==='z')clone.scale.z*=-1;
  clone.traverse(m=>{if(m.isMesh||m.isInstancedMesh)m.material=material(clone.userData.color||'#4da8ff')});
  scene.add(clone);objects.push(clone);return clone;
 }
-$('mirrorX').onclick=()=>{if(!selected)return say('Select a component to mirror');remember();const p=selected.position.clone();p.x=-p.x;duplicateSelectedAt(p,' · mirror X');select(objects[objects.length-1]);say('Created mirrored-position copy across X=0')};
-$('mirrorZ').onclick=()=>{if(!selected)return say('Select a component to mirror');remember();const p=selected.position.clone();p.z=-p.z;duplicateSelectedAt(p,' · mirror Z');select(objects[objects.length-1]);say('Created mirrored-position copy across Z=0')};
+$('mirrorX').onclick=()=>{if(!selected)return say('Select a component to mirror');remember();const p=selected.position.clone();p.x=-p.x;duplicateSelectedAt(p,' · mirror X','x');select(objects[objects.length-1]);say('Created mirrored-position copy across X=0')};
+$('mirrorZ').onclick=()=>{if(!selected)return say('Select a component to mirror');remember();const p=selected.position.clone();p.z=-p.z;duplicateSelectedAt(p,' · mirror Z','z');select(objects[objects.length-1]);say('Created mirrored-position copy across Z=0')};
 $('linearArray').onclick=()=>{
  if(!selected)return say('Select a component to array');
  const count=Math.max(2,Math.min(20,Math.floor(Number($('arrayCount').value)||3))),spacing=Math.max(.1,Number($('arraySpacing').value)||25)/100,origin=selected.position.clone();
