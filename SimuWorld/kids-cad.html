@@ -314,7 +314,7 @@ for(const [cap,key] of uploadViews){
   image.src=url;input.value='';
  };
 }
-\n$('outlineTool').onclick=$('outlineTool').onclick=()=>{drawMode='draw';$('outlineTool').classList.add('active');$('eraserTool').classList.remove('active')};
+$('outlineTool').onclick=()=>{drawMode='draw';$('outlineTool').classList.add('active');$('eraserTool').classList.remove('active')};
 $('eraserTool').onclick=()=>{drawMode='erase';$('eraserTool').classList.add('active');$('outlineTool').classList.remove('active')};
 $('drawColor').oninput=e=>{drawColor=e.target.value;drawMode='draw';$('outlineTool').classList.add('active');$('eraserTool').classList.remove('active')};
 $('brushSize').oninput=e=>{$('brushValue').textContent=e.target.value+' px';brushWidth=+e.target.value};
@@ -464,7 +464,7 @@ $('linearArray').onclick=()=>{
  remember();for(let i=1;i<count;i++){const p=origin.clone();p.x+=spacing*i;duplicateSelectedAt(p,' · array '+(i+1))}
  say('Created linear array with '+count+' components');updateModelTrees();
 };
-\nfunction baseLocalSize(o){function baseLocalSize(o){
+function baseLocalSize(o){
  const p=o.position.clone(),r=o.rotation.clone(),s=o.scale.clone();
  o.position.set(0,0,0);o.rotation.set(0,0,0);o.scale.set(1,1,1);o.updateMatrixWorld(true);
  const box=new THREE.Box3().setFromObject(o),size=box.getSize(new THREE.Vector3());
