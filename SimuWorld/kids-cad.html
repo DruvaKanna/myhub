@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SimuWorld — 3D CAD & AI 2D → 3D Studio</title>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SimuWorld — Kid CAD · Exact CAD · AI 2D → 3D</title>
 <style>
 :root{color-scheme:dark;--bg:#10182b;--panel:#1a2944;--panel2:#223653;--line:#3b5577;--ink:#f4f8ff;--muted:#afc1d9;--blue:#59b7ff;--mint:#68e0c0;--yellow:#ffd36b}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#36577b 0,transparent 55%),var(--bg);color:var(--ink);font:14px Inter,"Segoe UI",Arial,sans-serif}.top{height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:#111c30eF;border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:11px;font-size:20px;font-weight:850}.mark{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(145deg,#5ce0ca,#4c9dff,#9d79ff);font-size:22px}.brand small{display:block;color:var(--muted);font-size:9px;letter-spacing:2px}.actions{display:flex;gap:7px;flex-wrap:wrap}button,select,input{font:inherit}button{border:1px solid #4a678c;border-radius:9px;background:linear-gradient(#304c70,#213653);color:var(--ink);padding:9px 12px;cursor:pointer;font-weight:650}button:hover{filter:brightness(1.18);border-color:var(--blue)}button.primary{background:linear-gradient(#55b9ff,#2678c5);border-color:#83ceff}button.good{background:linear-gradient(#39bfa4,#218d7d)}button.warn{background:linear-gradient(#e5b64c,#a87524)}.layout{height:calc(100vh - 64px);min-height:600px;padding:12px;display:grid;grid-template-columns:240px minmax(400px,1fr) 270px;gap:12px}.panel{background:linear-gradient(155deg,#203452,#17243a);border:1px solid var(--line);border-radius:14px;box-shadow:0 14px 35px #0005;min-height:0}.left,.right{overflow:auto;padding:14px}.section{font-size:10px;letter-spacing:1.7px;color:#9eb9d8;font-weight:850;margin:4px 0 10px}.intro{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:14px}.toolgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.tool{min-height:78px;text-align:left;padding:9px;background:linear-gradient(145deg,#304b6c,#1b2c46)}.tool .emoji{display:block;font-size:22px;margin-bottom:6px}.tool small{display:block;color:#bfd0e4;font-size:10px;font-weight:500;margin-top:3px}.center{display:flex;flex-direction:column;gap:9px;min-width:0;min-height:0}.bar{display:flex;gap:7px;align-items:center;flex-wrap:wrap;padding:8px}.bar button{padding:8px 10px;font-size:12px}.view{position:relative;flex:1;min-height:400px;overflow:hidden;border-radius:14px;border:1px solid #466486;background:radial-gradient(ellipse at 50% 40%,#355578,#101d30 75%)}canvas{display:block;width:100%;height:100%;touch-action:none}.overlay{position:absolute;pointer-events:none;top:12px;left:13px;background:#0b1628d9;border:1px solid #496887;padding:8px 10px;border-radius:8px;font-size:11px;color:#c2d6ee}.tip{position:absolute;bottom:12px;left:13px;background:#0b1628d9;border:1px solid #496887;padding:8px 10px;border-radius:8px;font-size:10px;color:#c2d6ee}.right h3{margin:0 0 8px}.field{margin:14px 0}.field label{display:flex;justify-content:space-between;color:#c0d1e5;font-size:12px;margin-bottom:6px}.field input{width:100%;accent-color:#61c5ff}.field input[type=number],.field input[type=text],select{width:100%;background:#101c30;border:1px solid #4b6687;color:white;border-radius:8px;padding:9px}.xyz{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}.xyz label{font-size:10px;color:#9fb4cf}.xyz input{width:100%;margin-top:4px;background:#101c30;color:white;border:1px solid #4b6687;border-radius:7px;padding:7px}.badge{display:inline-block;border-radius:20px;background:#244d66;color:#a9f2e2;padding:5px 9px;font-size:10px}.note{font-size:11px;line-height:1.5;color:var(--muted)}.status{padding:8px 11px;color:#a9c0da;font-size:11px}.divider{height:1px;background:#3b5270;margin:15px 0}.hidden{display:none!important}.modal{position:fixed;inset:0;background:#030914c9;display:none;align-items:center;justify-content:center;padding:18px;z-index:9}.modal.show{display:flex}.dialog{width:min(470px,95vw);padding:20px;border-radius:15px;background:#1b2d48;border:1px solid #5d7da1;box-shadow:0 20px 70px #000b}.dialog h2{margin:0 0 8px}.dialog p{color:var(--muted);font-size:13px;line-height:1.5}.dialog .actions{justify-content:flex-end;margin-top:15px}@media(max-width:980px){.layout{grid-template-columns:210px 1fr}.right{grid-column:1/-1;max-height:230px}}@media(max-width:680px){.top{height:auto;min-height:64px;gap:10px;flex-wrap:wrap;padding:10px}.layout{height:auto;display:flex;flex-direction:column}.left{max-height:390px}.center{height:600px}.right{max-height:none}}
 
@@ -26,10 +26,18 @@
 .dimension strong{display:block;font-size:12px;margin-top:4px;color:#e7f2ff}
 @media(max-width:980px){.ai-layout{grid-template-columns:210px 1fr}.ai-right{grid-column:1/-1;max-height:none}.suggestions{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:680px){.ai-layout{height:auto;display:flex;flex-direction:column}.ai-center{height:auto}.view-board{grid-template-columns:1fr;grid-template-rows:none;min-height:0}.drawing-card{min-height:245px}.drawing-canvas{height:215px}.suggestions{grid-template-columns:1fr}}
+
+.exact-layout{grid-template-columns:250px minmax(420px,1fr) 300px}
+.exact-inspector{overflow:auto;padding:14px}
+.exact-xyz input{width:100%;margin-top:4px;background:#101c30;color:white;border:1px solid #4b6687;border-radius:7px;padding:7px}
+.exact-layout .tool{min-height:72px}
+.exact-layout .view{min-height:420px}
+@media(max-width:980px){.exact-layout{grid-template-columns:210px 1fr}.exact-inspector{grid-column:1/-1;max-height:340px}}
+@media(max-width:680px){.exact-layout{height:auto;display:flex;flex-direction:column}.exact-layout .center{height:620px}.exact-inspector{max-height:none}}
 </style></head><body>
-<header class="top"><div class="brand"><div class="mark">◇</div><div>SimuWorld<small>3D CAD · MULTI-VIEW DESIGN · ENGINEERING</small></div></div><div class="actions studio-switch"><button id="cadMode" class="active">⚙ CAD Studio</button><button id="aiMode">✏ AI 2D → 3D Studio</button></div><div class="actions"><button id="save">Save project</button><button id="open">Open project</button><button id="undo">↶ Undo</button><button id="redo">↷ Redo</button><button class="primary" id="print">Optional 3D print preparation</button><input id="file" type="file" accept=".json,application/json" hidden></div></header>
+<header class="top"><div class="brand"><div class="mark">◇</div><div>SimuWorld<small>3D CAD · MULTI-VIEW DESIGN · ENGINEERING</small></div></div><div class="actions studio-switch"><button id="cadMode" class="active">🧩 Kid CAD Studio</button><button id="exactMode">📐 Exact CAD Studio</button><button id="aiMode">✏ AI 2D → 3D Studio</button></div><div class="actions"><button id="save">Save project</button><button id="open">Open project</button><button id="undo">↶ Undo</button><button id="redo">↷ Redo</button><button class="primary" id="print">Optional 3D print preparation</button><input id="file" type="file" accept=".json,application/json" hidden></div></header>
 <div class="layout workspace active" id="cadWorkspace"><aside class="panel left"><div class="section">CREATE SOMETHING AWESOME</div><div class="intro">Pick a shape or machine part, then customize it. Start simple and build up to a whole invention.</div><div class="section">BASIC SHAPES</div><div class="toolgrid" id="shapes"></div><div class="divider"></div><div class="section">MECHANICAL PARTS</div><div class="toolgrid" id="mechanical"></div><div class="divider"></div><div class="section">BUILDING TOOLS</div><div class="toolgrid"><button class="tool" id="duplicate"><span class="emoji">▣</span>Duplicate<small>Make another copy</small></button><button class="tool" id="delete"><span class="emoji">🗑️</span>Delete<small>Remove selection</small></button><button class="tool" id="group"><span class="emoji">🧩</span>Group<small>Join selected parts</small></button><button class="tool" id="ungroup"><span class="emoji">✂️</span>Ungroup<small>Separate group</small></button></div><p class="note">Tip: Click a part to select it. Drag in empty space to orbit the camera; scroll to zoom.</p></aside>
-<main class="center"><div class="panel bar"><button id="move" class="primary">✥ Move</button><button id="rotate">⟳ Rotate</button><button id="scale">⤢ Resize</button><button id="home">◎ Home view</button><button id="grid">Grid: On</button><button id="measure">📏 Measure</button><button id="simulate" class="good">▶ Spin test</button></div><div class="view" id="view"><div class="overlay">3D DESIGN SPACE <span class="badge" id="modeBadge">SELECT</span></div><div class="tip">Click an object to select · Drag selected object to move · Right-drag to orbit · Scroll to zoom</div></div><div class="panel status" id="status">Ready to create · 0 parts in your project</div></main>
+<main class="center"><div class="panel bar"><button id="move" class="primary">✥ Move</button><button id="rotate">⟳ Rotate</button><button id="scale">⤢ Resize</button><button id="home">◎ Home view</button><button id="grid">Grid: On</button><button id="measure">📏 Measure</button><button id="simulate" class="good">▶ Spin test</button><button id="transferExact">⇄ Transfer to Exact CAD Studio</button></div><div class="view" id="view"><div class="overlay">3D DESIGN SPACE <span class="badge" id="modeBadge">SELECT</span></div><div class="tip">Click an object to select · Drag selected object to move · Right-drag to orbit · Scroll to zoom</div></div><div class="panel status" id="status">Ready to create · 0 parts in your project</div></main>
 <aside class="panel right"><div class="section">DESIGN INSPECTOR</div><h3 id="selectedName">Nothing selected yet</h3><div id="selectedType" class="note">Choose a shape or mechanical part to begin.</div><div class="divider"></div><div class="section">POSITION</div><div class="xyz"><label>X<input id="px" type="number" step=".1" value="0"></label><label>Y<input id="py" type="number" step=".1" value="0"></label><label>Z<input id="pz" type="number" step=".1" value="0"></label></div><div class="section" style="margin-top:18px">SIZE</div><div class="field"><label>Width <span id="sxv">2.0</span></label><input id="sx" type="range" min=".2" max="8" step=".1" value="2"></div><div class="field"><label>Height <span id="syv">2.0</span></label><input id="sy" type="range" min=".2" max="8" step=".1" value="2"></div><div class="field"><label>Depth <span id="szv">2.0</span></label><input id="sz" type="range" min=".2" max="8" step=".1" value="2"></div><div class="section">ROTATION</div><div class="field"><label>Turn around Y <span id="ryv">0°</span></label><input id="ry" type="range" min="0" max="360" step="1" value="0"></div><div class="field"><label>Color</label><input id="color" type="color" value="#4da8ff" style="width:100%;height:38px;background:#101c30;border:1px solid #4b6687;border-radius:8px;padding:4px"></div><div class="section">REAL-WORLD DIMENSIONS</div>
 <div class="dimension-grid"><div class="dimension"><span>Length</span><strong id="dimLength">—</strong></div><div class="dimension"><span>Height</span><strong id="dimHeight">—</strong></div><div class="dimension"><span>Depth</span><strong id="dimDepth">—</strong></div></div>
 <div class="field"><label>Display units</label><select id="unitSystem"><option value="cm">Centimeters (cm)</option><option value="mm">Millimeters (mm)</option><option value="m">Meters (m)</option><option value="in">Inches (in)</option><option value="ft">Feet (ft)</option></select></div>
@@ -81,16 +89,85 @@
   <div class="suggestions" id="aiSuggestions"><div class="preview">Analyze your drawings to see the available 3D appearance choices.</div></div>
   <div class="field"><label><input id="aiPolish" type="checkbox" style="width:auto;margin-right:7px"> Optional smoother-looking finish</label><p class="note">Changes the material appearance only; the draft geometry remains voxel-based.</p></div>
   <div class="result-list"><button id="newDrawing">＋ Start a new drawing</button></div>
+  <div class="ai-card hidden" id="aiTransferActions">
+    <h3>Choose where to continue</h3>
+    <p>Your 3D draft is ready. Choose one studio; the other remains available whenever you want.</p>
+    <div class="result-list">
+      <button class="primary" id="sendToKid">Transfer to Kid CAD Studio</button>
+      <button class="good" id="sendToExact">Transfer to Exact CAD Studio</button>
+    </div>
+  </div>
   <div class="ai-card"><h3>What happens next?</h3><p>Your chosen 3D draft opens in the regular SimuWorld CAD viewport. You can resize, rotate, recolor and continue engineering the overall object. Separate-part editing is a future upgrade. 3D printing is optional.</p></div>
 </aside>
 </section>
-<div class="modal" id="modal"><div class="dialog"><h2 id="modalTitle">Optional 3D print export</h2><p id="modalText">3D printing is optional. Export the selected model or the whole design as an STL mesh in millimeters for a slicer. The current prototype scale is 1 design unit = 10 cm. This does not start a printer.</p><div class="field"><label>What should be exported?</label><select id="exportChoice"><option value="selected">Selected part only</option><option value="all">All visible parts</option></select></div><div class="actions"><button id="cancelModal">Cancel</button><button id="confirmExport" class="primary">Export STL</button></div></div></div>
+
+<section class="layout workspace exact-layout" id="exactWorkspace">
+  <aside class="panel left">
+    <div class="section">EXACT CAD STUDIO</div>
+    <div class="intro">A precision-focused workspace for detailed dimensions, accurate placement and mechanical part design. Your project is shared with Kid CAD Studio.</div>
+    <div class="section">PRECISION PART LIBRARY</div>
+    <div class="toolgrid" id="exactParts"></div>
+    <div class="divider"></div>
+    <div class="section">PRECISION UTILITIES</div>
+    <div class="toolgrid">
+      <button class="tool" id="snapSelected"><span class="emoji">⌗</span>Snap to grid<small>Round position to step</small></button>
+      <button class="tool" id="centerSelected"><span class="emoji">◎</span>Center at origin<small>Move selected part to 0,0,0</small></button>
+      <button class="tool" id="exactDuplicate"><span class="emoji">▣</span>Duplicate part<small>Copy selected component</small></button>
+      <button class="tool" id="exactDelete"><span class="emoji">⌫</span>Delete part<small>Remove selected component</small></button>
+    </div>
+    <div class="divider"></div>
+    <div class="field"><label>Position snap step (mm)</label><input id="exactSnapStep" type="number" min="0.1" step="0.1" value="1"></div>
+    <p class="note">Exact CAD uses numeric controls in millimeters and degrees. This prototype provides precise object transforms; fully parametric sketches, feature history and engineering-grade constraints are future engine work.</p>
+  </aside>
+  <main class="center">
+    <div class="panel bar">
+      <button id="exactMove" class="primary">✥ Move</button>
+      <button id="exactRotate">⟳ Rotate</button>
+      <button id="exactScale">⤢ Resize</button>
+      <button id="exactHome">◎ Home view</button>
+      <button id="exactGrid">Grid: On</button>
+      <button id="exactMeasure">📏 Measure</button>
+      <button id="transferKid">⇄ Transfer to Kid CAD Studio</button>
+    </div>
+    <div class="view" id="exactView"><div class="overlay">EXACT CAD · PRECISION DESIGN <span class="badge" id="exactModeBadge">SELECT</span></div><div class="tip">Select parts · Use numeric dimensions at right · Right-drag to orbit · Scroll to zoom</div></div>
+    <div class="panel status" id="exactStatus">Exact CAD ready · Shared SimuWorld project</div>
+  </main>
+  <aside class="panel right exact-inspector">
+    <div class="section">PRECISION INSPECTOR</div>
+    <h3 id="exactSelectedName">Nothing selected</h3>
+    <p class="note" id="exactSelectedType">Select a component in the viewport or add one from the library.</p>
+    <div class="divider"></div>
+    <div class="section">POSITION · MILLIMETERS</div>
+    <div class="xyz exact-xyz">
+      <label>X<input id="ex" type="number" step="0.01" value="0"></label>
+      <label>Y<input id="ey" type="number" step="0.01" value="0"></label>
+      <label>Z<input id="ez" type="number" step="0.01" value="0"></label>
+    </div>
+    <div class="divider"></div>
+    <div class="section">OVERALL SIZE · MILLIMETERS</div>
+    <div class="xyz exact-xyz">
+      <label>Length<input id="ew" type="number" min="0.1" step="0.01" value="200"></label>
+      <label>Height<input id="eh" type="number" min="0.1" step="0.01" value="200"></label>
+      <label>Depth<input id="ed" type="number" min="0.1" step="0.01" value="200"></label>
+    </div>
+    <div class="divider"></div>
+    <div class="section">ROTATION · DEGREES</div>
+    <div class="xyz exact-xyz">
+      <label>X<input id="erx" type="number" step="0.1" value="0"></label>
+      <label>Y<input id="ery" type="number" step="0.1" value="0"></label>
+      <label>Z<input id="erz" type="number" step="0.1" value="0"></label>
+    </div>
+    <div class="field"><label>Component color</label><input id="exactColor" type="color" value="#4da8ff" style="width:100%;height:38px;background:#101c30;border:1px solid #4b6687;border-radius:8px;padding:4px"></div>
+    <button class="primary" id="applyExact" style="width:100%">Apply exact dimensions</button>
+    <p class="note">Reference scale: 1 design unit = 100 mm. Dimensions are prototype estimates, not certified manufacturing measurements.</p>
+  </aside>
+</section><div class="modal" id="modal"><div class="dialog"><h2 id="modalTitle">Optional 3D print export</h2><p id="modalText">3D printing is optional. Export the selected model or the whole design as an STL mesh in millimeters for a slicer. The current prototype scale is 1 design unit = 10 cm. This does not start a printer.</p><div class="field"><label>What should be exported?</label><select id="exportChoice"><option value="selected">Selected part only</option><option value="all">All visible parts</option></select></div><div class="actions"><button id="cancelModal">Cancel</button><button id="confirmExport" class="primary">Export STL</button></div></div></div>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 <script type="module">
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {STLExporter} from 'three/addons/exporters/STLExporter.js';
-const $=id=>document.getElementById(id), host=$('view');
+const $=id=>document.getElementById(id);let host=$('view');
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x14243a);scene.fog=new THREE.Fog(0x14243a,35,90);
 const camera=new THREE.PerspectiveCamera(48,1,.1,200);camera.position.set(12,11,15);
 const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.2;host.appendChild(renderer.domElement);
@@ -136,16 +213,16 @@ case'spring':{let pts=[];for(let i=0;i<=180;i++){let a=i/180*Math.PI*2*7;pts.pus
 case'motor':mesh(group,new THREE.CylinderGeometry(.72,.72,1.8,48),blue,[0,1.1,0]).rotation.z=Math.PI/2;mesh(group,new THREE.CylinderGeometry(.13,.13,1.1,32),steel,[1.35,1.1,0]).rotation.z=Math.PI/2;mesh(group,new THREE.BoxGeometry(.6,.2,.6),dark,[-.2,2.08,0]);break;
 }
 group.userData.color=d.id==='gear'?'#ffc85a':d.id==='spring'?'#ff965c':d.id==='bearing'?'#aebdca':'#4da8ff';return group}
-function say(t){$('status').textContent=t+' · '+objects.length+' parts in your project'}
+function say(t){const message=t+' · '+objects.length+' parts in your project';$('status').textContent=message;if($('exactStatus'))$('exactStatus').textContent=message}
 function snapshot(){return objects.map(o=>({id:o.userData.def.id,p:o.position.toArray(),r:o.rotation.toArray(),s:o.scale.toArray(),color:o.userData.color,aiGrid:o.userData.aiGrid||null,aiStyle:o.userData.aiStyle||null,aiDims:o.userData.aiDims||null}))}
 function remember(){history.push(snapshot());if(history.length>60)history.shift();future=[]}
 function restore(data){objects.forEach(o=>scene.remove(o));objects=[];(data||[]).forEach(x=>{let d=defs.find(y=>y.id===x.id);if(!d&&x.id==='aiConcept'){let o=createAiModel(x.aiGrid,x.aiStyle,x.aiDims);if(!o)return;o.position.fromArray(x.p||[0,1.5,0]);o.rotation.fromArray(x.r||[0,0,0]);o.scale.fromArray(x.s||[1,1,1]);o.userData.color=x.color||o.userData.color;scene.add(o);objects.push(o);return}if(!d)return;let o=build(d);o.position.fromArray(x.p);o.rotation.fromArray(x.r);o.scale.fromArray(x.s);o.userData.color=x.color||'#4da8ff';o.traverse(m=>{if(m.isMesh)m.material=material(o.userData.color)});scene.add(o);objects.push(o)});select(null);say('Project loaded')}
 function add(d){remember();let o=build(d);o.position.set((Math.random()-.5)*2,0,(Math.random()-.5)*2);scene.add(o);objects.push(o);select(o);say(d.name+' added')}
-function select(o){selected=o;$('selectedName').textContent=o?o.userData.def.name:'Nothing selected yet';$('selectedType').textContent=o?o.userData.def.desc:'Choose a shape or mechanical part to begin.';if(!o){updateDimensions();return}for(let [id,v] of [['px',o.position.x],['py',o.position.y],['pz',o.position.z],['sx',o.scale.x],['sy',o.scale.y],['sz',o.scale.z],['ry',THREE.MathUtils.radToDeg(o.rotation.y)]])$(id).value=v;updateLabels();$('color').value=o.userData.color||'#4da8ff';updateDimensions()}
+function select(o){selected=o;$('selectedName').textContent=o?o.userData.def.name:'Nothing selected yet';$('selectedType').textContent=o?o.userData.def.desc:'Choose a shape or mechanical part to begin.';if(!o){updateDimensions();syncExactInspector();return}for(let [id,v] of [['px',o.position.x],['py',o.position.y],['pz',o.position.z],['sx',o.scale.x],['sy',o.scale.y],['sz',o.scale.z],['ry',THREE.MathUtils.radToDeg(o.rotation.y)]])$(id).value=v;updateLabels();$('color').value=o.userData.color||'#4da8ff';updateDimensions();syncExactInspector()}
 function updateLabels(){for(let id of ['sx','sy','sz'])$(id+'v').textContent=(+$(id).value).toFixed(1);$('ryv').textContent=Math.round(+$('ry').value)+'°'}
 function edit(){if(!selected)return;remember();selected.position.set(+$('px').value,+$('py').value,+$('pz').value);selected.scale.set(+$('sx').value,+$('sy').value,+$('sz').value);selected.rotation.y=THREE.MathUtils.degToRad(+$('ry').value);selected.userData.color=$('color').value;selected.traverse(m=>{if(m.isMesh||m.isInstancedMesh)m.material=material(selected.userData.color)});updateLabels();updateDimensions()}
 for(const id of ['px','py','pz','sx','sy','sz','ry','color'])$(id).addEventListener('change',edit);
-for(const d of defs){let b=document.createElement('button');b.className='tool';b.innerHTML='<span class="emoji">'+d.emoji+'</span>'+d.name+'<small>'+d.desc+'</small>';b.onclick=()=>add(d);$(d.group==='shape'?'shapes':'mechanical').appendChild(b)}
+for(const d of defs){let b=document.createElement('button');b.className='tool';b.innerHTML='<span class="emoji">'+d.emoji+'</span>'+d.name+'<small>'+d.desc+'</small>';b.onclick=()=>add(d);$(d.group==='shape'?'shapes':'mechanical').appendChild(b);let eb=document.createElement('button');eb.className='tool';eb.innerHTML='<span class="emoji">'+d.emoji+'</span>'+d.name+'<small>'+d.desc+'</small>';eb.onclick=()=>add(d);$('exactParts').appendChild(eb)}
 function removeSelected(){if(!selected)return;say('Removed '+selected.userData.def.name);scene.remove(selected);objects=objects.filter(o=>o!==selected);select(null)}
 $('delete').onclick=()=>{if(selected){remember();removeSelected()}};$('duplicate').onclick=()=>{if(selected){let d=selected.userData.def;remember();let o=selected.userData.ai?selected.clone(true):build(d);o.position.copy(selected.position).add(new THREE.Vector3(1,0,1));o.scale.copy(selected.scale);o.userData.color=selected.userData.color;o.traverse(m=>{if(m.isMesh||m.isInstancedMesh)m.material=material(o.userData.color)});scene.add(o);objects.push(o);select(o);say('Duplicated part')}};
 $('group').onclick=()=>{if(!selected)return say('Select a part first');say('Grouping is planned for a future update; parts remain independently editable')};$('ungroup').onclick=()=>say('Select a grouped assembly to ungroup it');
@@ -235,6 +312,7 @@ function createVoxelSurface(grid,nx,ny,nz){
  }
  const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));geo.computeVertexNormals();geo.computeBoundingSphere();return geo;
 }
+let pendingAiModel=null;
 function createAiModel(grid,styleId,dims){
  const nx=(dims&&dims.nx)||28,ny=(dims&&dims.ny)||18,nz=(dims&&dims.nz)||28;let data=Array.isArray(grid)&&grid.length===nx*ny*nz?grid.slice():createDefaultGrid(nx,ny,nz);
  const style=aiStyles.find(s=>s.id===styleId)||aiStyles[0],color=new THREE.Color(style.color);
@@ -246,13 +324,26 @@ function createAiModel(grid,styleId,dims){
 }
 function transformFourViews(){
  if(!draftGrid&&!analyzeFourViews())return;
- const model=createAiModel(draftGrid,selectedStyle,draftDims);remember();scene.add(model);objects.push(model);select(model);say('Your multi-view 3D draft is now in the SimuWorld viewport');$('aiStatus').textContent='3D draft created · Continue editing it in the normal CAD workspace.';
- $('cadWorkspace').classList.add('active');$('aiWorkspace').classList.remove('active');$('cadMode').classList.add('active');$('aiMode').classList.remove('active');requestAnimationFrame(resize);
+ pendingAiModel=createAiModel(draftGrid,selectedStyle,draftDims);
+ $('aiTransferActions').classList.remove('hidden');
+ $('aiStatus').textContent='3D draft prepared · Choose Kid CAD Studio or Exact CAD Studio to continue.';
 }
 $('analyzeViews').onclick=analyzeFourViews;
 $('transform3d').onclick=transformFourViews;
-$('cadMode').onclick=()=>{$('cadWorkspace').classList.add('active');$('aiWorkspace').classList.remove('active');$('cadMode').classList.add('active');$('aiMode').classList.remove('active');requestAnimationFrame(resize)};
-$('aiMode').onclick=()=>{$('aiWorkspace').classList.add('active');$('cadWorkspace').classList.remove('active');$('aiMode').classList.add('active');$('cadMode').classList.remove('active')};
+function activateStudio(name){
+ const ids={kid:'cadWorkspace',exact:'exactWorkspace',ai:'aiWorkspace'};
+ Object.values(ids).forEach(id=>$(id).classList.remove('active'));
+ $(ids[name]).classList.add('active');
+ $('cadMode').classList.toggle('active',name==='kid');$('exactMode').classList.toggle('active',name==='exact');$('aiMode').classList.toggle('active',name==='ai');
+ if(name==='kid'||name==='exact'){host=$(name==='kid'?'view':'exactView');host.appendChild(renderer.domElement);requestAnimationFrame(()=>{resize();controls.update();syncExactInspector()})}
+}
+function transferAiModel(destination){
+ if(!pendingAiModel){$('aiStatus').textContent='Create a 3D draft before choosing a destination.';return}
+ remember();scene.add(pendingAiModel);objects.push(pendingAiModel);select(pendingAiModel);pendingAiModel=null;$('aiTransferActions').classList.add('hidden');activateStudio(destination);say('Your AI-created model was transferred to '+(destination==='kid'?'Kid CAD Studio':'Exact CAD Studio'));
+}
+$('cadMode').onclick=()=>activateStudio('kid');$('exactMode').onclick=()=>activateStudio('exact');$('aiMode').onclick=()=>activateStudio('ai');
+$('transferExact').onclick=()=>activateStudio('exact');$('transferKid').onclick=()=>activateStudio('kid');
+$('sendToKid').onclick=()=>transferAiModel('kid');$('sendToExact').onclick=()=>transferAiModel('exact');
 $('unitSystem').onchange=updateDimensions;
 $('downloadDrawing').onclick=()=>{
  const out=document.createElement('canvas');out.width=1000;out.height=740;const c=out.getContext('2d');c.fillStyle='#fff';c.fillRect(0,0,out.width,out.height);
@@ -266,12 +357,62 @@ function updateDimensions(){
  ids.forEach((id,i)=>$(id).textContent=vals[i].toFixed(2)+' '+unit);
 }
 
-const ray=new THREE.Raycaster(),mouse=new THREE.Vector2(),plane=new THREE.Plane(new THREE.Vector3(0,1,0),0),hit=new THREE.Vector3();let drag=null,offset=new THREE.Vector3(),lastTap=0;
+
+function baseLocalSize(o){
+ const p=o.position.clone(),r=o.rotation.clone(),s=o.scale.clone();
+ o.position.set(0,0,0);o.rotation.set(0,0,0);o.scale.set(1,1,1);o.updateMatrixWorld(true);
+ const box=new THREE.Box3().setFromObject(o),size=box.getSize(new THREE.Vector3());
+ o.position.copy(p);o.rotation.copy(r);o.scale.copy(s);o.updateMatrixWorld(true);
+ return new THREE.Vector3(Math.max(size.x,.0001),Math.max(size.y,.0001),Math.max(size.z,.0001));
+}
+function syncExactInspector(){
+ $('exactSelectedName').textContent=selected?selected.userData.def.name:'Nothing selected';
+ $('exactSelectedType').textContent=selected?selected.userData.def.desc:'Select a component in the viewport or add one from the library.';
+ if(!selected)return;
+ const base=baseLocalSize(selected);
+ $('ex').value=(selected.position.x*100).toFixed(2);$('ey').value=(selected.position.y*100).toFixed(2);$('ez').value=(selected.position.z*100).toFixed(2);
+ $('ew').value=(base.x*selected.scale.x*100).toFixed(2);$('eh').value=(base.y*selected.scale.y*100).toFixed(2);$('ed').value=(base.z*selected.scale.z*100).toFixed(2);
+ $('erx').value=THREE.MathUtils.radToDeg(selected.rotation.x).toFixed(2);$('ery').value=THREE.MathUtils.radToDeg(selected.rotation.y).toFixed(2);$('erz').value=THREE.MathUtils.radToDeg(selected.rotation.z).toFixed(2);
+ $('exactColor').value=selected.userData.color||'#4da8ff';
+}
+function applyExactInspector(){
+ if(!selected)return say('Select a component before applying exact dimensions');
+ const vals=['ex','ey','ez','ew','eh','ed','erx','ery','erz'].map(id=>Number($(id).value));
+ if(vals.some(v=>!Number.isFinite(v))||vals.slice(3,6).some(v=>v<=0))return say('Enter valid positions, positive sizes and rotations');
+ const base=baseLocalSize(selected);
+ remember();
+ selected.position.set(vals[0]/100,vals[1]/100,vals[2]/100);
+ selected.scale.set(vals[3]/(base.x*100),vals[4]/(base.y*100),vals[5]/(base.z*100));
+ selected.rotation.set(THREE.MathUtils.degToRad(vals[6]),THREE.MathUtils.degToRad(vals[7]),THREE.MathUtils.degToRad(vals[8]));
+ selected.userData.color=$('exactColor').value;
+ selected.traverse(m=>{if(m.isMesh||m.isInstancedMesh)m.material=material(selected.userData.color)});
+ select(selected);say('Exact dimensions applied in millimeters');
+}
+$('applyExact').onclick=applyExactInspector;
+$('snapSelected').onclick=()=>{
+ if(!selected)return say('Select a component to snap');
+ let step=Math.max(.1,Number($('exactSnapStep').value)||1)/100;
+ remember();selected.position.set(Math.round(selected.position.x/step)*step,Math.round(selected.position.y/step)*step,Math.round(selected.position.z/step)*step);select(selected);say('Position snapped to '+(step*100).toFixed(2)+' mm increments');
+};
+$('centerSelected').onclick=()=>{
+ if(!selected)return say('Select a component to center');
+ remember();selected.position.set(0,0,0);select(selected);say('Selected component moved to the origin');
+};
+$('exactDuplicate').onclick=()=>$('duplicate').click();
+$('exactDelete').onclick=()=>$('delete').click();
+$('exactMove').onclick=()=>{$('move').click();$('exactModeBadge').textContent='MOVE'};
+$('exactRotate').onclick=()=>{$('rotate').click();$('exactModeBadge').textContent='ROTATE'};
+$('exactScale').onclick=()=>{$('scale').click();$('exactModeBadge').textContent='RESIZE'};
+$('exactHome').onclick=()=>$('home').click();
+$('exactGrid').onclick=()=>$('grid').click();
+$('exactMeasure').onclick=()=>$('measure').click();
+
+const ray=new THREE.Raycaster()const ray=new THREE.Raycaster(),mouse=new THREE.Vector2(),plane=new THREE.Plane(new THREE.Vector3(0,1,0),0),hit=new THREE.Vector3();let drag=null,offset=new THREE.Vector3(),lastTap=0;
 function setRay(e){let r=renderer.domElement.getBoundingClientRect();mouse.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);ray.setFromCamera(mouse,camera)}
 renderer.domElement.addEventListener('pointerdown',e=>{setRay(e);let hits=ray.intersectObjects(objects,true);let o=null;if(hits.length){o=hits[0].object;while(o.parent&&!objects.includes(o))o=o.parent}if(o){if(measure&&selected&&selected!==o){let dist=selected.position.distanceTo(o.position);say('Center-to-center distance: '+dist.toFixed(2)+' design units');measure=false;return}select(o);if(e.button===0){drag=o;controls.enabled=false;ray.ray.intersectPlane(plane,hit);offset.copy(o.position).sub(hit)}}else if(e.button===0){select(null)}});
-renderer.domElement.addEventListener('pointermove',e=>{if(!drag)return;setRay(e);if(!ray.ray.intersectPlane(plane,hit))return;if(mode==='move'){drag.position.set(hit.x+offset.x,drag.position.y,hit.z+offset.z);$('px').value=drag.position.x;$('pz').value=drag.position.z}else if(mode==='rotate'){drag.rotation.y+=.015}else if(mode==='scale'){let s=Math.max(.2,drag.scale.x+(e.movementX-e.movementY)*.005);drag.scale.setScalar(s);$('sx').value=$('sy').value=$('sz').value=s}updateLabels()});
+renderer.domElement.addEventListener('pointermove',e=>{if(!drag)return;setRay(e);if(!ray.ray.intersectPlane(plane,hit))return;if(mode==='move'){drag.position.set(hit.x+offset.x,drag.position.y,hit.z+offset.z);$('px').value=drag.position.x;$('pz').value=drag.position.z}else if(mode==='rotate'){drag.rotation.y+=.015}else if(mode==='scale'){let s=Math.max(.2,drag.scale.x+(e.movementX-e.movementY)*.005);drag.scale.setScalar(s);$('sx').value=$('sy').value=$('sz').value=s}updateLabels();syncExactInspector()});
 function end(){drag=null;controls.enabled=true}renderer.domElement.addEventListener('pointerup',end);renderer.domElement.addEventListener('pointerleave',end);
-function resize(){let w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h)}new ResizeObserver(resize).observe(host);resize();
-try{let old=JSON.parse(localStorage.getItem('simuworld-kids-cad'));if(old){restore(old.objects||old);if(old.drawings)restoreDrawings(old.drawings);if(old.description!==undefined)$('aiDescription').value=old.description}}catch(e){}
+function resize(){let w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h)}const viewportObserver=new ResizeObserver(resize);viewportObserver.observe($('view'));viewportObserver.observe($('exactView'));resize();
+try{let old=JSON.parse(localStorage.getItem('simuworld-kids-cad'));if(old){restore(old.objects||old);if(old.drawings)restoreDrawings(old.drawings);if(old.description!==undefined)$('aiDescription').value=old.description}}catch(e){}activateStudio('kid');
 function animate(){requestAnimationFrame(animate);controls.update();if(spinning)objects.forEach(o=>{o.rotation.y+=.012});renderer.render(scene,camera)}animate();
 </script></body></html>
