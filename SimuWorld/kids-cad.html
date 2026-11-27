@@ -74,14 +74,14 @@
 <aside class="panel ai-right">
   <div class="section">AI DESIGN ASSISTANT</div>
   <h3 style="margin:0 0 8px">Describe your invention</h3>
-  <div class="field"><label>Optional description</label><textarea id="aiDescription" rows="4" style="width:100%;resize:vertical;background:#101c30;border:1px solid #4b6687;color:white;border-radius:8px;padding:9px" placeholder="Example: a shark with a wide tail, one larger fin and an uneven set of gills"></textarea></div>
+  <div class="field"><label>Optional description</label><textarea id="aiDescription" rows="4" style="width:100%;resize:vertical;background:#101c30;border:1px solid #4b6687;color:white;border-radius:8px;padding:9px" placeholder="Example: a shark with a wide tail, one larger fin and an uneven set of gills"></textarea><p class="note">Saved with the project. Text-based AI interpretation is not connected in this prototype yet.</p></div>
   <div class="ai-card"><h3>Interpretation rules</h3><p>• Keep the left and right drawings distinct.<br>• Preserve unusual proportions.<br>• Do not add details that are not shown.<br>• Review the draft before using it.</p></div>
   <div class="section">3D APPEARANCE SUGGESTIONS</div>
   <p class="note">Choose how the first 3D draft should look. These are preview styles, not separate AI-generated designs.</p>
   <div class="suggestions" id="aiSuggestions"><div class="preview">Analyze your drawings to see the available 3D appearance choices.</div></div>
-  <div class="field"><label><input id="aiPolish" type="checkbox" style="width:auto;margin-right:7px"> Optional smoother-looking finish</label><p class="note">Changes the surface appearance only. It does not invent missing parts.</p></div>
+  <div class="field"><label><input id="aiPolish" type="checkbox" style="width:auto;margin-right:7px"> Optional smoother-looking finish</label><p class="note">Changes the material appearance only; the draft geometry remains voxel-based.</p></div>
   <div class="result-list"><button id="newDrawing">＋ Start a new drawing</button></div>
-  <div class="ai-card"><h3>What happens next?</h3><p>Your chosen 3D draft opens in the regular SimuWorld CAD viewport. There you can resize, widen, thin, rotate, recolor and continue engineering it. 3D printing is an optional path.</p></div>
+  <div class="ai-card"><h3>What happens next?</h3><p>Your chosen 3D draft opens in the regular SimuWorld CAD viewport. You can resize, rotate, recolor and continue engineering the overall object. Separate-part editing is a future upgrade. 3D printing is optional.</p></div>
 </aside>
 </section>
 <div class="modal" id="modal"><div class="dialog"><h2 id="modalTitle">Optional 3D print export</h2><p id="modalText">3D printing is optional. This exports your selected model or the whole design as an STL mesh for a slicer. It does not start a printer.</p><div class="field"><label>What should be exported?</label><select id="exportChoice"><option value="selected">Selected part only</option><option value="all">All visible parts</option></select></div><div class="actions"><button id="cancelModal">Cancel</button><button id="confirmExport" class="primary">Export STL</button></div></div></div>
@@ -219,17 +219,30 @@ function showAppearanceSuggestions(){
   wrap.appendChild(b);
  });
 }
+function createVoxelSurface(grid,nx,ny,nz){
+ const sx=6/nx,sy=3.4/ny,sz=5/nz,vertices=[];
+ const solid=(i,j,k)=>i>=0&&i<nx&&j>=0&&j<ny&&k>=0&&k<nz&&grid[(i*ny+j)*nz+k];
+ function quad(v){vertices.push(...v[0],...v[1],...v[2],...v[0],...v[2],...v[3])}
+ for(let i=0;i<nx;i++)for(let j=0;j<ny;j++)for(let k=0;k<nz;k++){
+  if(!solid(i,j,k))continue;
+  const x0=-3+i*sx,x1=x0+sx,y0=-1.7+j*sy,y1=y0+sy,z0=-2.5+k*sz,z1=z0+sz;
+  if(!solid(i+1,j,k))quad([[x1,y0,z0],[x1,y1,z0],[x1,y1,z1],[x1,y0,z1]]);
+  if(!solid(i-1,j,k))quad([[x0,y0,z1],[x0,y1,z1],[x0,y1,z0],[x0,y0,z0]]);
+  if(!solid(i,j+1,k))quad([[x0,y1,z0],[x0,y1,z1],[x1,y1,z1],[x1,y1,z0]]);
+  if(!solid(i,j-1,k))quad([[x0,y0,z1],[x0,y0,z0],[x1,y0,z0],[x1,y0,z1]]);
+  if(!solid(i,j,k+1))quad([[x0,y0,z1],[x1,y0,z1],[x1,y1,z1],[x0,y1,z1]]);
+  if(!solid(i,j,k-1))quad([[x1,y0,z0],[x0,y0,z0],[x0,y1,z0],[x1,y1,z0]]);
+ }
+ const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));geo.computeVertexNormals();geo.computeBoundingSphere();return geo;
+}
 function createAiModel(grid,styleId,dims){
  const nx=(dims&&dims.nx)||28,ny=(dims&&dims.ny)||18,nz=(dims&&dims.nz)||28;let data=Array.isArray(grid)&&grid.length===nx*ny*nz?grid.slice():createDefaultGrid(nx,ny,nz);
- const style=aiStyles.find(s=>s.id===styleId)||aiStyles[0],color=new THREE.Color(style.color),sx=6/nx,sy=3.4/ny,sz=5/nz;
+ const style=aiStyles.find(s=>s.id===styleId)||aiStyles[0],color=new THREE.Color(style.color);
  let count=0;for(let i=0;i<data.length;i++)if(data[i])count++;
- if(!count){data=createDefaultGrid(nx,ny,nz);count=data.filter(Boolean).length}
+ if(!count){data=createDefaultGrid(nx,ny,nz)}
  const smooth=$('aiPolish').checked,mat=new THREE.MeshStandardMaterial({color:color,metalness:style.id==='engineering'?.62:.22,roughness:smooth?.2:style.roughness,flatShading:style.flat&&!smooth});
- const inst=new THREE.InstancedMesh(new THREE.BoxGeometry(sx,sy,sz),mat,count);inst.castShadow=true;inst.receiveShadow=true;inst.frustumCulled=false;
- const dummy=new THREE.Object3D();let n=0;
- for(let i=0;i<nx;i++)for(let j=0;j<ny;j++)for(let k=0;k<nz;k++){if(!data[(i*ny+j)*nz+k])continue;dummy.position.set(-3+(i+.5)*sx,(j+.5)*sy-1.7,-2.5+(k+.5)*sz);dummy.updateMatrix();inst.setMatrixAt(n++,dummy.matrix)}
- inst.instanceMatrix.needsUpdate=true;
- const g=new THREE.Group();g.add(inst);g.position.set(0,1.7,0);g.userData={def:{id:'aiConcept',name:'Multi-view 3D Draft',desc:'Editable 3D volume estimated from your top, bottom, left and right drawings.'},color:style.color,ai:true,aiGrid:data,aiStyle:style.id,aiDims:{nx:nx,ny:ny,nz:nz}};return g;
+ const geometry=createVoxelSurface(data,nx,ny,nz),mesh=new THREE.Mesh(geometry,mat);mesh.castShadow=true;mesh.receiveShadow=true;
+ const g=new THREE.Group();g.add(mesh);g.position.set(0,1.7,0);g.userData={def:{id:'aiConcept',name:'Multi-view 3D Draft',desc:'Editable 3D volume estimated from your top, bottom, left and right drawings.'},color:style.color,ai:true,aiGrid:data,aiStyle:style.id,aiDims:{nx:nx,ny:ny,nz:nz}};return g;
 }
 function transformFourViews(){
  if(!draftGrid&&!analyzeFourViews())return;
