@@ -172,7 +172,7 @@
         <label>Extrusion depth (mm)<input id="profileDepth" type="number" min="0.1" step="0.1" value="12"></label>
         <label>Wall thickness (mm)<input id="profileWall" type="number" min="0.1" step="0.1" value="4"></label>
       </div>
-      <button id="createExtrusion" class="primary" style="width:100%">＋ Create extruded feature</button>
+      <button id="createExtrusion" class="primary" style="width:100%">＋ Create extruded feature</button><button id="loadExtrusion" style="width:100%">Load selected extrusion</button><button id="updateExtrusion" class="good" style="width:100%">Update selected extrusion</button>
     </div>
     <div class="section">PRECISION UTILITIES</div>
     <div class="toolgrid">
@@ -582,6 +582,31 @@ function createExtrusion(){
  remember();const o=createExtrusionFromData(p);scene.add(o);objects.push(o);select(o);say('Created '+p.profile+' extrusion · '+p.depth+' mm depth');
 }
 $('createExtrusion').onclick=createExtrusion;
+
+$('loadExtrusion').onclick=()=>{
+ if(!selected||selected.userData.def.id!=='customExtrude'||!selected.userData.feature){say('Select a profile extrusion first');return}
+ const p=selected.userData.feature;
+ $('exactProfile').value=p.profile;$('exactPlane').value=p.plane;
+ $('profileWidth').value=p.width;$('profileHeight').value=p.height;
+ $('profileDepth').value=p.depth;$('profileWall').value=p.wall||2;
+ say('Loaded '+selected.userData.def.name+' parameters into the profile editor');
+};
+$('updateExtrusion').onclick=()=>{
+ if(!selected||selected.userData.def.id!=='customExtrude'||!selected.userData.feature){say('Select a profile extrusion before updating it');return}
+ const p={profile:$('exactProfile').value,plane:$('exactPlane').value,width:Number($('profileWidth').value),height:Number($('profileHeight').value),depth:Number($('profileDepth').value),wall:Number($('profileWall').value)};
+ if([p.width,p.height,p.depth,p.wall].some(v=>!Number.isFinite(v)||v<=0)){say('Enter positive sketch dimensions');return}
+ if(p.profile==='ring'&&p.wall>=p.width/2){say('Ring wall thickness must be smaller than its radius');return}
+ const old=selected,index=objects.indexOf(old);if(index<0)return;
+ remember();
+ const replacement=createExtrusionFromData(p);
+ replacement.userData.def.name=old.userData.def.name;
+ replacement.userData.color=old.userData.color||'#69bfff';
+ replacement.position.copy(old.position);replacement.rotation.copy(old.rotation);replacement.scale.copy(old.scale);
+ replacement.traverse(m=>{if(m.isMesh)m.material=material(replacement.userData.color)});
+ applyPlasticMaterialToGroup(replacement,old.userData.materialId);
+ scene.add(replacement);scene.remove(old);objects[index]=replacement;select(replacement);
+ say('Updated profile extrusion dimensions and regenerated its mesh');
+};
 function duplicateSelectedAt(position,nameSuffix,flipAxis){
  if(!selected)return null;
  const clone=selected.clone(true);clone.position.copy(position);clone.userData={...selected.userData,def:{...selected.userData.def,name:selected.userData.def.name+(nameSuffix||' copy')}};
