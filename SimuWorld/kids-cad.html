@@ -57,11 +57,41 @@
 .sketch-panel button{margin-top:8px}
 .tool.wide{grid-column:1/-1;min-height:55px}
 @media(max-width:680px){.sketch-grid{grid-template-columns:1fr 1fr}.drawing-heading{height:38px}.drawing-canvas{height:calc(100% - 38px)}}
+
+.engineering-workspace{height:calc(100vh - 64px);min-height:620px;padding:12px}
+.engineering-shell{display:grid;grid-template-columns:245px minmax(0,1fr);gap:12px;height:100%;min-height:0}
+.engineering-sidebar{padding:18px;overflow:auto}.engineering-sidebar h2{margin:0 0 8px;font-size:22px}
+.eng-tab{display:block;width:100%;text-align:left;margin:7px 0;background:#14243a}.eng-tab.active{background:linear-gradient(#55b9ff,#2678c5);border-color:#83ceff}
+.eng-rule{margin-top:20px;padding:12px;border:1px solid #536d8a;border-radius:10px;background:#102039;color:#c7d9ed;font-size:11px;line-height:1.55}
+.engineering-main{padding:18px;overflow:auto;min-width:0}
+.eng-hero{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px;border-radius:15px;background:linear-gradient(115deg,#193d62,#1f3152 65%,#29365e);border:1px solid #54779b}
+.eng-hero h1{font-size:clamp(24px,3vw,34px);margin:5px 0 9px}.eng-hero p,.eng-lead{max-width:760px;color:#c3d4e8;line-height:1.6}
+.eng-hero-mark{flex:none;width:76px;height:76px;border-radius:20px;display:grid;place-items:center;background:linear-gradient(145deg,#4ebbdc,#4c83d0);font-size:24px;font-weight:900}
+.eng-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0 22px}
+.eng-stat{padding:13px;border:1px solid #405d7e;border-radius:11px;background:#13243a}.eng-stat span,.eng-material-detail span{display:block;color:#aebfd3;font-size:11px}
+.eng-stat strong{display:block;font-size:23px;margin-top:7px}.eng-section-title{margin:22px 0 10px}.eng-section-title h2{font-size:18px;margin:0 0 4px}.eng-section-title p{font-size:11px;color:#aebfd3;margin:0}
+.eng-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.eng-card{min-height:145px;text-align:left;padding:15px;background:#142741;border:1px solid #49698b}.eng-card span{display:block;color:#67c8fa;font-size:11px;margin-bottom:14px}
+.eng-card strong,.eng-card small{display:block}.eng-card small{color:#b4c7dc;line-height:1.5;margin-top:7px;font-weight:400}
+.eng-status-list{display:grid;gap:8px}.eng-status-list div{display:grid;grid-template-columns:130px 1fr;gap:12px;padding:12px;border-radius:9px;background:#13243a;border:1px solid #3d5878;font-size:11px;line-height:1.55}.eng-status-list b{color:#79d9c0}.eng-status-list span{color:#c0d0e3}
+.eng-material-detail{display:grid;grid-template-columns:1.3fr 1fr 1fr 1.5fr;gap:10px;margin:16px 0;padding:14px;border:1px solid #49698b;border-radius:12px;background:#13243a}
+.eng-material-detail label,.eng-calculator label{display:block;font-size:11px;color:#c0d1e5;margin-bottom:8px}
+.eng-material-detail select,.eng-calculator input,.eng-calculator select{display:block;width:100%;margin-top:6px;background:#0e1c30;color:#f4f8ff;border:1px solid #4b6687;border-radius:8px;padding:9px}
+.eng-material-detail strong{display:block;margin-top:7px;font-size:14px}.eng-material-number strong{font-size:23px}.eng-material-number small{display:block;margin-top:3px;color:#9eb2ca;font-size:10px}
+.eng-table-wrap{overflow:auto;border:1px solid #405d7e;border-radius:10px}.eng-table{width:100%;border-collapse:collapse;font-size:11px;min-width:560px}
+.eng-table th,.eng-table td{padding:10px;text-align:left;border-bottom:1px solid #344d6b}.eng-table th{background:#203957;color:#d8e8fa}.eng-table td{color:#bdcde0}.eng-table tr:last-child td{border-bottom:0}
+.eng-actions{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}.eng-warning{padding:12px;border-radius:9px;border:1px solid #8a6b39;background:#342a19;color:#f1d9a7;font-size:11px;line-height:1.55}
+.eng-calculator-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:15px}
+.eng-calculator{padding:15px;border:1px solid #405d7e;border-radius:12px;background:#13243a;min-width:0}.eng-calculator h2{margin:0 0 7px;font-size:17px}.eng-calculator p,.eng-calculator small{color:#aebfd3;font-size:11px;line-height:1.5}
+.eng-calculator output{display:block;min-height:47px;padding:10px;margin-top:12px;border-radius:8px;background:#0c1b2f;border:1px solid #395775;color:#9fe7d3;font-size:13px;line-height:1.5}
+.eng-audit-summary{margin:14px 0;padding:14px;border-radius:10px;background:#13243a;border:1px solid #49698b;color:#e0edfa;line-height:1.6}.eng-audit-list{padding-left:22px;color:#bed0e4;font-size:12px;line-height:1.8}
+@media(max-width:1050px){.eng-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.eng-cards{grid-template-columns:1fr}.eng-calculator-grid{grid-template-columns:1fr 1fr}.eng-material-detail{grid-template-columns:1fr 1fr}}
+@media(max-width:760px){.engineering-workspace{height:auto;min-height:0;display:block}.engineering-shell{display:flex;flex-direction:column;height:auto}.engineering-sidebar{overflow:visible}.engineering-main{overflow:visible}.eng-status-list div{grid-template-columns:1fr;gap:4px}.eng-calculator-grid{grid-template-columns:1fr}.eng-material-detail{grid-template-columns:1fr 1fr}}
 </style></head><body>
-<header class="top"><div class="brand"><div class="mark">◇</div><div>SimuWorld<small>3D CAD · MULTI-VIEW DESIGN · ENGINEERING</small></div></div><div class="actions studio-switch"><button id="cadMode" class="active">🧩 Kid CAD Studio</button><button id="exactMode">📐 Exact CAD Studio</button><button id="aiMode">✏ AI 2D → 3D Studio</button></div><div class="actions"><button id="save">Save project</button><button id="open">Open project</button><button id="undo">↶ Undo</button><button id="redo">↷ Redo</button><button class="primary" id="print">Optional 3D print preparation</button><input id="file" type="file" accept=".json,application/json" hidden></div></header>
+<header class="top"><div class="brand"><div class="mark">◇</div><div>SimuWorld<small>3D CAD · MULTI-VIEW DESIGN · ENGINEERING</small></div></div><div class="actions studio-switch"><button id="cadMode" class="active">🧩 Kid CAD Studio</button><button id="exactMode">📐 Exact CAD Studio</button><button id="aiMode">✏ AI 2D → 3D Studio</button><button id="engMode">🧪 Engineering Hub</button></div><div class="actions"><button id="save">Save project</button><button id="open">Open project</button><button id="undo">↶ Undo</button><button id="redo">↷ Redo</button><button class="primary" id="print">Optional 3D print preparation</button><input id="file" type="file" accept=".json,application/json" hidden></div></header>
 <div class="layout workspace active" id="cadWorkspace"><aside class="panel left"><div class="section">CREATE SOMETHING AWESOME</div><div class="intro">Pick a shape or machine part, then customize it. Start simple and build up to a whole invention.</div><div class="section">BASIC SHAPES</div><div class="toolgrid" id="shapes"></div><div class="divider"></div><div class="section">MECHANICAL PARTS</div><div class="toolgrid" id="mechanical"></div><div class="divider"></div><div class="section">BUILDING TOOLS</div><div class="toolgrid"><button class="tool" id="duplicate"><span class="emoji">▣</span>Duplicate<small>Make another copy</small></button><button class="tool" id="delete"><span class="emoji">🗑️</span>Delete<small>Remove selection</small></button><button class="tool" id="group"><span class="emoji">🧩</span>Group<small>Join selected parts</small></button><button class="tool" id="ungroup"><span class="emoji">✂️</span>Ungroup<small>Separate group</small></button></div><p class="note">Tip: Click a part to select it. Drag in empty space to orbit the camera; scroll to zoom.</p></aside>
 <main class="center"><div class="panel bar"><button id="move" class="primary">✥ Move</button><button id="rotate">⟳ Rotate</button><button id="scale">⤢ Resize</button><button id="home">◎ Home view</button><button id="grid">Grid: On</button><button id="measure">📏 Measure</button><button id="simulate" class="good">▶ Spin test</button><button id="transferExact">⇄ Transfer to Exact CAD Studio</button></div><div class="view" id="view"><div class="overlay">3D DESIGN SPACE <span class="badge" id="modeBadge">SELECT</span></div><div class="tip">Click an object to select · Drag selected object to move · Right-drag to orbit · Scroll to zoom</div></div><div class="panel status" id="status">Ready to create · 0 parts in your project</div></main>
-<aside class="panel right"><div class="section">DESIGN INSPECTOR</div><h3 id="selectedName">Nothing selected yet</h3><div id="selectedType" class="note">Choose a shape or mechanical part to begin.</div><div class="divider"></div><div class="section">POSITION</div><div class="xyz"><label>X<input id="px" type="number" step=".1" value="0"></label><label>Y<input id="py" type="number" step=".1" value="0"></label><label>Z<input id="pz" type="number" step=".1" value="0"></label></div><div class="section" style="margin-top:18px">SIZE</div><div class="field"><label>Width <span id="sxv">2.0</span></label><input id="sx" type="range" min=".2" max="8" step=".1" value="2"></div><div class="field"><label>Height <span id="syv">2.0</span></label><input id="sy" type="range" min=".2" max="8" step=".1" value="2"></div><div class="field"><label>Depth <span id="szv">2.0</span></label><input id="sz" type="range" min=".2" max="8" step=".1" value="2"></div><div class="section">ROTATION</div><div class="field"><label>Turn around Y <span id="ryv">0°</span></label><input id="ry" type="range" min="0" max="360" step="1" value="0"></div><div class="field"><label>Color</label><input id="color" type="color" value="#4da8ff" style="width:100%;height:38px;background:#101c30;border:1px solid #4b6687;border-radius:8px;padding:4px"></div><div class="section">PROJECT MODEL TREE</div><div class="tree-list" id="kidObjectTree"><div class="tree-empty">Your parts will appear here.</div></div><div class="divider"></div><div class="section">REAL-WORLD DIMENSIONS</div>
+<aside class="panel right"><div class="section">DESIGN INSPECTOR</div><h3 id="selectedName">Nothing selected yet</h3><div id="selectedType" class="note">Choose a shape or mechanical part to begin.</div><div class="divider"></div><div class="section">POSITION</div><div class="xyz"><label>X<input id="px" type="number" step=".1" value="0"></label><label>Y<input id="py" type="number" step=".1" value="0"></label><label>Z<input id="pz" type="number" step=".1" value="0"></label></div><div class="section" style="margin-top:18px">SIZE</div><div class="field"><label>Width <span id="sxv">2.0</span></label><input id="sx" type="range" min=".2" max="8" step=".1" value="2"></div><div class="field"><label>Height <span id="syv">2.0</span></label><input id="sy" type="range" min=".2" max="8" step=".1" value="2"></div><div class="field"><label>Depth <span id="szv">2.0</span></label><input id="sz" type="range" min=".2" max="8" step=".1" value="2"></div><div class="section">ROTATION</div><div class="field"><label>Turn around Y <span id="ryv">0°</span></label><input id="ry" type="range" min="0" max="360" step="1" value="0"></div><div class="field"><label>Color</label><input id="color" type="color" value="#4da8ff" style="width:100%;height:38px;background:#101c30;border:1px solid #4b6687;border-radius:8px;padding:4px"><label class="note" for="plasticMaterial">Physical material · PLASTIC ONLY</label><select id="plasticMaterial"></select></div><div class="section">PROJECT MODEL TREE</div><div class="tree-list" id="kidObjectTree"><div class="tree-empty">Your parts will appear here.</div></div><div class="divider"></div><div class="section">REAL-WORLD DIMENSIONS</div>
 <div class="dimension-grid"><div class="dimension"><span>Length</span><strong id="dimLength">—</strong></div><div class="dimension"><span>Height</span><strong id="dimHeight">—</strong></div><div class="dimension"><span>Depth</span><strong id="dimDepth">—</strong></div></div>
 <div class="field"><label>Display units</label><select id="unitSystem"><option value="cm">Centimeters (cm)</option><option value="mm">Millimeters (mm)</option><option value="m">Meters (m)</option><option value="in">Inches (in)</option><option value="ft">Feet (ft)</option></select></div>
 <p class="note">Current prototype reference: 1 design unit = 10 cm. Dimensions are estimates; a calibration control is needed before manufacturing use.</p>
@@ -193,11 +223,73 @@
       <label>Y<input id="ery" type="number" step="0.1" value="0"></label>
       <label>Z<input id="erz" type="number" step="0.1" value="0"></label>
     </div>
-    <div class="field"><label>Component color</label><input id="exactColor" type="color" value="#4da8ff" style="width:100%;height:38px;background:#101c30;border:1px solid #4b6687;border-radius:8px;padding:4px"></div>
+    <div class="field"><label>Component color</label><input id="exactColor" type="color" value="#4da8ff" style="width:100%;height:38px;background:#101c30;border:1px solid #4b6687;border-radius:8px;padding:4px"><label class="note" for="exactPlasticMaterial">Physical material · PLASTIC ONLY</label><select id="exactPlasticMaterial"></select></div>
     <button class="primary" id="applyExact" style="width:100%">Apply exact dimensions</button>
     <p class="note">Reference scale: 1 design unit = 100 mm. Dimensions are prototype estimates, not certified manufacturing measurements.</p>
   </aside>
-</section><div class="modal" id="modal"><div class="dialog"><h2 id="modalTitle">Optional 3D print export</h2><p id="modalText">3D printing is optional. Export the selected model or the whole design as an STL mesh in millimeters for a slicer. The current prototype scale is 1 design unit = 10 cm. This does not start a printer.</p><div class="field"><label>What should be exported?</label><select id="exportChoice"><option value="selected">Selected part only</option><option value="all">All visible parts</option></select></div><div class="actions"><button id="cancelModal">Cancel</button><button id="confirmExport" class="primary">Export STL</button></div></div></div>
+</section>
+<section class="workspace engineering-workspace" id="engineeringWorkspace" aria-label="SimuWorld Engineering Hub">
+ <div class="engineering-shell">
+  <aside class="panel engineering-sidebar">
+   <div class="section">SIMUWORLD ENGINEERING</div><h2>Engineering Hub</h2>
+   <p class="note">Plastic-only materials, practical engineering calculators and project checks.</p>
+   <button class="eng-tab active" data-eng-page="overview">Overview</button>
+   <button class="eng-tab" data-eng-page="materials">Plastic materials</button>
+   <button class="eng-tab" data-eng-page="calculators">Calculators</button>
+   <button class="eng-tab" data-eng-page="audit">Project audit & tests</button>
+   <div class="eng-rule"><strong>Global design rule</strong><br>All physical parts in SimuWorld are assigned plastic materials. The current mesh prototype is not a certified CAD or simulation engine.</div>
+  </aside>
+  <main class="panel engineering-main">
+   <section class="eng-page" id="engPageOverview">
+    <div class="eng-hero"><div><div class="section">PROJECT CONTROL CENTER</div><h1>Build with plastic. Engineer with evidence.</h1><p>Keep the design, material choice, calculations and checks together in one project.</p></div><div class="eng-hero-mark">SW</div></div>
+    <div class="eng-stats">
+     <div class="eng-stat"><span>Project parts</span><strong id="engPartCount">0</strong></div><div class="eng-stat"><span>Plastic materials</span><strong id="engMaterialCount">18</strong></div><div class="eng-stat"><span>Estimated mass</span><strong id="engMassEstimate">—</strong></div><div class="eng-stat"><span>Audit status</span><strong id="engAuditStatus">Not run</strong></div>
+    </div>
+    <div class="eng-section-title"><h2>Connected engineering tools</h2><p>These controls perform real calculations or checks in this browser.</p></div>
+    <div class="eng-cards">
+     <button class="eng-card" data-eng-page="materials"><span>01</span><strong>Plastic materials database</strong><small>Choose from 18 plastic material families and record the assignment on each part.</small></button>
+     <button class="eng-card" data-eng-page="calculators"><span>02</span><strong>Engineering calculators</strong><small>Estimate material mass, gear speed and worst-case tolerance stack-up.</small></button>
+     <button class="eng-card" data-eng-page="audit"><span>03</span><strong>Project audit and smoke tests</strong><small>Check project metadata, mesh data and component generation for common failures.</small></button>
+    </div>
+    <div class="eng-section-title"><h2>Engineering engine status</h2><p>Implemented capability versus work that still needs a dedicated engine.</p></div>
+    <div class="eng-status-list">
+     <div><b>Active now</b><span>Three.js mesh viewport, plastic material assignment, project JSON, basic transforms, STL geometry export, four-view voxel draft, local calculators and basic mesh checks.</span></div>
+     <div><b>Still required</b><span>Exact B-rep CAD kernel, real sketch constraint solver, editable parametric dependency graph, robust Boolean/fillet operations, assembly joints, validated FEA/CFD solvers, 3MF workflow, CAM toolpaths and semantic AI reconstruction.</span></div>
+    </div>
+   </section>
+   <section class="eng-page hidden" id="engPageMaterials">
+    <div class="section">PLASTIC MATERIALS LIBRARY</div><h1>Plastic material selection</h1>
+    <p class="eng-lead">Density values below are generic estimating values, not certified grade specifications. A real design must use the exact manufacturer's datasheet, material condition and process data.</p>
+    <div class="eng-material-detail">
+     <div><label for="hubMaterial">Selected material</label><select id="hubMaterial"></select></div>
+     <div class="eng-material-number"><span>Typical density estimate</span><strong id="hubDensity">—</strong><small>g/cm³ · approximate only</small></div>
+     <div><span>Material family</span><strong id="hubFamily">—</strong></div>
+     <div><span>Common use</span><strong id="hubUse">—</strong></div>
+    </div>
+    <p id="hubMaterialNote" class="eng-warning"></p>
+    <div class="eng-table-wrap"><table class="eng-table"><thead><tr><th>Material</th><th>Family</th><th>Density estimate</th><th>Common use</th></tr></thead><tbody id="plasticMaterialRows"></tbody></table></div>
+    <div class="eng-actions"><button class="primary" id="applyHubMaterial">Assign to selected part</button><button id="useHubMaterialForCalculator">Use in mass calculator</button></div>
+    <p class="note">Fiber-filled nylon is still a plastic composite. Stiffness and strength depend on fiber content, direction, moisture and manufacturing process.</p>
+   </section>
+   <section class="eng-page hidden" id="engPageCalculators">
+    <div class="section">ENGINEERING CALCULATORS</div><h1>Useful calculations</h1>
+    <div class="eng-calculator-grid">
+     <article class="eng-calculator"><h2>Plastic mass estimator</h2><p>Estimate mass from supplied volume and a generic material density.</p><label>Material<select id="calcMaterial"></select></label><label>Volume (cm³)<input id="calcVolume" type="number" min="0" step="0.01" value="10"></label><div class="eng-actions"><button class="primary" id="calculateMass">Calculate mass</button><button id="useSelectedVolume">Use selected mesh estimate</button></div><output id="massResult">Enter a volume to calculate an estimate.</output><small>Result is only as reliable as the volume and grade-specific density inputs.</small></article>
+     <article class="eng-calculator"><h2>Gear ratio and speed</h2><p>For a simple external gear pair, ignoring losses and deformation.</p><label>Driver teeth<input id="gearDriver" type="number" min="1" step="1" value="20"></label><label>Driven teeth<input id="gearDriven" type="number" min="1" step="1" value="40"></label><label>Input speed (RPM)<input id="gearInputRpm" type="number" min="0" step="1" value="120"></label><button class="primary" id="calculateGear">Calculate gear output</button><output id="gearResult">Enter gear tooth counts and input speed.</output></article>
+     <article class="eng-calculator"><h2>Worst-case tolerance stack</h2><p>Add absolute tolerances for a simple one-dimensional stack.</p><label>Tolerance A (mm)<input id="tolA" type="number" min="0" step="0.001" value="0.10"></label><label>Tolerance B (mm)<input id="tolB" type="number" min="0" step="0.001" value="0.10"></label><label>Tolerance C (mm)<input id="tolC" type="number" min="0" step="0.001" value="0.10"></label><button class="primary" id="calculateTolerance">Calculate stack</button><output id="toleranceResult">Enter individual tolerances.</output><small>RSS is optional and depends on suitable statistical assumptions.</small></article>
+    </div>
+   </section>
+   <section class="eng-page hidden" id="engPageAudit">
+    <div class="section">VALIDATION AND QUALITY</div><h1>Project audit & browser smoke tests</h1>
+    <p class="eng-lead">These checks inspect the current Three.js project. They do not certify watertightness, B-rep validity, dimensional accuracy or manufacturing readiness.</p>
+    <div class="eng-actions"><button class="primary" id="runProjectAudit">Run project audit</button><button id="runEngineTests">Run geometry smoke tests</button></div>
+    <div class="eng-audit-summary" id="engAuditSummary">Run an audit to inspect the current project.</div><ul class="eng-audit-list" id="engAuditList"></ul>
+    <div class="eng-warning">A successful browser smoke test only confirms that tested mesh operations produced finite geometry in this browser. It does not prove engineering-grade CAD kernel validity.</div>
+   </section>
+  </main>
+ </div>
+</section>
+<div class="modal" id="modal"><div class="dialog"><h2 id="modalTitle">Optional 3D print export</h2><p id="modalText">3D printing is optional. Export the selected model or the whole design as an STL mesh in millimeters for a slicer. The current prototype scale is 1 design unit = 10 cm. This does not start a printer.</p><div class="field"><label>What should be exported?</label><select id="exportChoice"><option value="selected">Selected part only</option><option value="all">All visible parts</option></select></div><div class="actions"><button id="cancelModal">Cancel</button><button id="confirmExport" class="primary">Export STL</button></div></div></div>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 <script type="module">
 import * as THREE from 'three';
@@ -228,7 +320,47 @@ const defs=[
 { id:'motor',name:'Motor housing',emoji:'🔋',group:'mechanical',desc:'A simple motor body and shaft.'}
 ];
 let objects=[],selected=null,mode='move',gridOn=true,spinning=false,measure=false,history=[],future=[];
-const material=(c)=>new THREE.MeshStandardMaterial({color:c,metalness:.45,roughness:.32});
+const PLASTIC_MATERIALS = [
+ {id:'PLA',name:'PLA',family:'Thermoplastic',density:1.24,use:'Prototypes and common FFF prints',note:'Generic density estimate; exact properties depend on grade, additives and print settings.'},
+ {id:'PETG',name:'PETG',family:'Thermoplastic',density:1.27,use:'General-purpose printed components',note:'Check the filament maker datasheet for the selected grade.'},
+ {id:'ABS',name:'ABS',family:'Thermoplastic',density:1.04,use:'Housings and functional parts',note:'Processing, additives and grade change the properties.'},
+ {id:'ASA',name:'ASA',family:'Thermoplastic',density:1.07,use:'Outdoor-use housings and components',note:'UV performance depends on the formulated grade.'},
+ {id:'PA6',name:'Nylon PA6',family:'Polyamide',density:1.13,use:'Mechanical parts and wear components',note:'Moisture conditioning strongly affects dimensions and properties.'},
+ {id:'PA12',name:'Nylon PA12',family:'Polyamide',density:1.01,use:'Functional printed and molded parts',note:'Use a grade-specific datasheet and moisture condition.'},
+ {id:'PC',name:'Polycarbonate (PC)',family:'Thermoplastic',density:1.20,use:'Tough parts and enclosures',note:'Temperature and processing history affect performance.'},
+ {id:'TPU',name:'TPU',family:'Elastomer',density:1.20,use:'Flexible parts, seals and bumpers',note:'Hardness grade must be specified separately.'},
+ {id:'POM',name:'POM / Acetal',family:'Engineering thermoplastic',density:1.41,use:'Gears, bushings and sliding components',note:'Choose homopolymer or copolymer grade as appropriate.'},
+ {id:'UHMWPE',name:'UHMW-PE',family:'Polyethylene',density:0.94,use:'Low-friction and wear surfaces',note:'Grade and fabrication process affect the data.'},
+ {id:'HDPE',name:'HDPE',family:'Polyethylene',density:0.95,use:'Lightweight structural and fluid-handling parts',note:'Use a grade-specific datasheet for design calculations.'},
+ {id:'LDPE',name:'LDPE',family:'Polyethylene',density:0.92,use:'Flexible components and films',note:'Generic density estimate only.'},
+ {id:'PP',name:'Polypropylene (PP)',family:'Thermoplastic',density:0.90,use:'Lightweight housings and containers',note:'Copolymer, homopolymer and fillers change the properties.'},
+ {id:'PVC',name:'PVC',family:'Thermoplastic',density:1.40,use:'Suitable enclosures, profiles and fittings',note:'Rigid and flexible formulations differ substantially.'},
+ {id:'PMMA',name:'Acrylic (PMMA)',family:'Thermoplastic',density:1.18,use:'Transparent panels and covers',note:'Impact and chemical resistance are grade-dependent.'},
+ {id:'PEEK',name:'PEEK',family:'High-performance thermoplastic',density:1.30,use:'High-performance engineering components',note:'High-performance and reinforced grades vary widely.'},
+ {id:'PA6-GF',name:'Glass-filled PA6',family:'Fiber-reinforced plastic',density:1.35,use:'Stiff reinforced mechanical components',note:'Fiber content and orientation strongly affect properties.'},
+ {id:'PA-CF',name:'Carbon-fiber-filled PA',family:'Fiber-reinforced plastic',density:1.25,use:'Stiff lightweight printed components',note:'Short-fiber filament is direction-dependent and grade-specific.'}
+];
+const DEFAULT_PLASTIC='PLA';
+const getPlastic=id=>PLASTIC_MATERIALS.find(m=>m.id===id)||PLASTIC_MATERIALS[0];
+const normalizePlasticId=id=>PLASTIC_MATERIALS.some(m=>m.id===id)?id:DEFAULT_PLASTIC;
+const material=(c)=>new THREE.MeshStandardMaterial({color:c,metalness:0,roughness:.52});
+function applyPlasticMaterialToGroup(group,materialId){
+ const id=normalizePlasticId(materialId),data=getPlastic(id);
+ group.userData.materialId=id;group.userData.materialFamily=data.family;
+ group.traverse(node=>{
+  if(!node.isMesh)return;
+  const apply=mat=>{if(!mat)return;mat.metalness=0;mat.roughness=Math.max(.38,mat.roughness||.5);mat.userData={...(mat.userData||{}),simuworldMaterialId:id,physicalMaterial:'plastic'};mat.needsUpdate=true};
+  if(Array.isArray(node.material))node.material.forEach(apply);else apply(node.material);
+  node.userData={...(node.userData||{}),physicalMaterial:'plastic',materialId:id};
+ });
+ return data;
+}
+function assignPlasticMaterial(id){
+ if(!selected){say('Select a component before assigning its plastic material');return}
+ const safeId=normalizePlasticId(id);remember();applyPlasticMaterialToGroup(selected,safeId);
+ $('plasticMaterial').value=safeId;$('exactPlasticMaterial').value=safeId;
+ say(getPlastic(safeId).name+' assigned to '+selected.userData.def.name);
+}
 function mesh(g,geo,mat,pos){const m=new THREE.Mesh(geo,mat);m.position.set(...pos);m.castShadow=true;m.receiveShadow=true;g.add(m);return m}
 function makeGear(g){const s=new THREE.Shape(),n=12,ro=1.05,ri=.83;for(let i=0;i<n*4;i++){let a=i/(n*4)*Math.PI*2,r=[ro,ro,ri,ri][i%4];let x=Math.cos(a)*r,z=Math.sin(a)*r;if(i===0)s.moveTo(x,z);else s.lineTo(x,z)}s.closePath();s.holes.push((()=>{let h=new THREE.Path();h.absarc(0,0,.25,0,Math.PI*2,true);return h})());const geo=new THREE.ExtrudeGeometry(s,{depth:.28,bevelEnabled:true,bevelSegments:2,steps:1,bevelSize:.04,bevelThickness:.04});geo.rotateX(-Math.PI/2);return mesh(g,geo,material(mats.yellow),[0,.3,0])}
 function build(d){const group=new THREE.Group();group.userData.def=d;const blue=material(mats.blue),steel=material(mats.steel),dark=material(mats.dark),mint=material(mats.mint),orange=material(mats.orange);
@@ -248,7 +380,7 @@ case'bracket':mesh(group,new THREE.BoxGeometry(2,.35,.5),orange,[0,.25,0]);mesh(
 case'spring':{let pts=[];for(let i=0;i<=180;i++){let a=i/180*Math.PI*2*7;pts.push(new THREE.Vector3(Math.cos(a)*.55,i/180*2.4,Math.sin(a)*.55))}mesh(group,new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),360,.09,10,false),orange,[0,.15,0]);break}
 case'motor':mesh(group,new THREE.CylinderGeometry(.72,.72,1.8,48),blue,[0,1.1,0]).rotation.z=Math.PI/2;mesh(group,new THREE.CylinderGeometry(.13,.13,1.1,32),steel,[1.35,1.1,0]).rotation.z=Math.PI/2;mesh(group,new THREE.BoxGeometry(.6,.2,.6),dark,[-.2,2.08,0]);break;
 }
-group.userData.color=d.id==='gear'?'#ffc85a':d.id==='spring'?'#ff965c':d.id==='bearing'?'#aebdca':'#4da8ff';return group}
+group.userData.color=d.id==='gear'?'#ffc85a':d.id==='spring'?'#ff965c':d.id==='bearing'?'#aebdca':'#4da8ff';applyPlasticMaterialToGroup(group,DEFAULT_PLASTIC);return group}
 function updateModelTrees(){
  const lists=[$('kidObjectTree'),$('exactFeatureTree')].filter(Boolean);
  lists.forEach(list=>{list.innerHTML='';if(!objects.length){list.innerHTML='<div class="tree-empty">No components yet. Add a shape or create a feature.</div>';return}
@@ -258,12 +390,12 @@ function updateModelTrees(){
   });
  });
 }
-function say(t){const message=t+' · '+objects.length+' parts in your project';$('status').textContent=message;if($('exactStatus'))$('exactStatus').textContent=message;updateModelTrees()}
-function snapshot(){return objects.map(o=>({id:o.userData.def.id,p:o.position.toArray(),r:o.rotation.toArray(),s:o.scale.toArray(),color:o.userData.color,aiGrid:o.userData.aiGrid||null,aiStyle:o.userData.aiStyle||null,aiDims:o.userData.aiDims||null,feature:o.userData.feature||null,visible:o.visible}))}
+function say(t){const message=t+' · '+objects.length+' parts in your project';$('status').textContent=message;if($('exactStatus'))$('exactStatus').textContent=message;updateModelTrees();if($('engPartCount'))refreshEngineeringOverview()}
+function snapshot(){return objects.map(o=>({id:o.userData.def.id,p:o.position.toArray(),r:o.rotation.toArray(),s:o.scale.toArray(),color:o.userData.color,materialId:normalizePlasticId(o.userData.materialId),aiGrid:o.userData.aiGrid||null,aiStyle:o.userData.aiStyle||null,aiDims:o.userData.aiDims||null,feature:o.userData.feature||null,visible:o.visible}))}
 function remember(){history.push(snapshot());if(history.length>60)history.shift();future=[]}
-function restore(data){objects.forEach(o=>scene.remove(o));objects=[];(data||[]).forEach(x=>{let d=defs.find(y=>y.id===x.id);if(!d&&x.id==='aiConcept'){let o=createAiModel(x.aiGrid,x.aiStyle,x.aiDims);if(!o)return;o.position.fromArray(x.p||[0,1.5,0]);o.rotation.fromArray(x.r||[0,0,0]);o.scale.fromArray(x.s||[1,1,1]);o.userData.color=x.color||o.userData.color;scene.add(o);objects.push(o);return}if(!d&&x.id==='customExtrude'&&x.feature){let o=createExtrusionFromData(x.feature);o.position.fromArray(x.p||[0,0,0]);o.rotation.fromArray(x.r||[0,0,0]);o.scale.fromArray(x.s||[1,1,1]);o.visible=x.visible!==false;o.userData.color=x.color||o.userData.color;scene.add(o);objects.push(o);return}if(!d)return;let o=build(d);o.position.fromArray(x.p);o.rotation.fromArray(x.r);o.scale.fromArray(x.s);o.userData.color=x.color||'#4da8ff';o.traverse(m=>{if(m.isMesh)m.material=material(o.userData.color)});o.visible=x.visible!==false;scene.add(o);objects.push(o)});select(null);updateModelTrees();say('Project loaded')}
+function restore(data){objects.forEach(o=>scene.remove(o));objects=[];(data||[]).forEach(x=>{let d=defs.find(y=>y.id===x.id);if(!d&&x.id==='aiConcept'){let o=createAiModel(x.aiGrid,x.aiStyle,x.aiDims);if(!o)return;o.position.fromArray(x.p||[0,1.5,0]);o.rotation.fromArray(x.r||[0,0,0]);o.scale.fromArray(x.s||[1,1,1]);o.userData.color=x.color||o.userData.color;applyPlasticMaterialToGroup(o,x.materialId);scene.add(o);objects.push(o);return}if(!d&&x.id==='customExtrude'&&x.feature){let o=createExtrusionFromData(x.feature);o.position.fromArray(x.p||[0,0,0]);o.rotation.fromArray(x.r||[0,0,0]);o.scale.fromArray(x.s||[1,1,1]);o.visible=x.visible!==false;o.userData.color=x.color||o.userData.color;applyPlasticMaterialToGroup(o,x.materialId);scene.add(o);objects.push(o);return}if(!d)return;let o=build(d);o.position.fromArray(x.p);o.rotation.fromArray(x.r);o.scale.fromArray(x.s);o.userData.color=x.color||'#4da8ff';o.traverse(m=>{if(m.isMesh)m.material=material(o.userData.color)});applyPlasticMaterialToGroup(o,x.materialId);o.visible=x.visible!==false;scene.add(o);objects.push(o)});select(null);updateModelTrees();say('Project loaded')}
 function add(d){remember();let o=build(d);o.position.set((Math.random()-.5)*2,0,(Math.random()-.5)*2);scene.add(o);objects.push(o);select(o);say(d.name+' added');updateModelTrees()}
-function select(o){selected=o;$('selectedName').textContent=o?o.userData.def.name:'Nothing selected yet';$('selectedType').textContent=o?o.userData.def.desc:'Choose a shape or mechanical part to begin.';if(!o){updateDimensions();syncExactInspector();updateModelTrees();return}for(let [id,v] of [['px',o.position.x],['py',o.position.y],['pz',o.position.z],['sx',o.scale.x],['sy',o.scale.y],['sz',o.scale.z],['ry',THREE.MathUtils.radToDeg(o.rotation.y)]])$(id).value=v;updateLabels();$('color').value=o.userData.color||'#4da8ff';updateDimensions();syncExactInspector();updateModelTrees()}
+function select(o){selected=o;$('selectedName').textContent=o?o.userData.def.name:'Nothing selected yet';$('selectedType').textContent=o?o.userData.def.desc:'Choose a shape or mechanical part to begin.';if(!o){$('plasticMaterial').value=DEFAULT_PLASTIC;$('exactPlasticMaterial').value=DEFAULT_PLASTIC;updateDimensions();syncExactInspector();updateModelTrees();return}for(let [id,v] of [['px',o.position.x],['py',o.position.y],['pz',o.position.z],['sx',o.scale.x],['sy',o.scale.y],['sz',o.scale.z],['ry',THREE.MathUtils.radToDeg(o.rotation.y)]])$(id).value=v;updateLabels();$('color').value=o.userData.color||'#4da8ff';$('plasticMaterial').value=normalizePlasticId(o.userData.materialId);updateDimensions();syncExactInspector();updateModelTrees()}
 function updateLabels(){for(let id of ['sx','sy','sz'])$(id+'v').textContent=(+$(id).value).toFixed(1);$('ryv').textContent=Math.round(+$('ry').value)+'°'}
 function edit(){if(!selected)return;remember();selected.position.set(+$('px').value,+$('py').value,+$('pz').value);selected.scale.set(+$('sx').value,+$('sy').value,+$('sz').value);selected.rotation.y=THREE.MathUtils.degToRad(+$('ry').value);selected.userData.color=$('color').value;selected.traverse(m=>{if(m.isMesh||m.isInstancedMesh)m.material=material(selected.userData.color)});updateLabels();updateDimensions()}
 for(const id of ['px','py','pz','sx','sy','sz','ry','color'])$(id).addEventListener('change',edit);
@@ -273,9 +405,9 @@ $('delete').onclick=()=>{if(selected){remember();removeSelected()}};$('duplicate
 $('group').onclick=()=>{if(!selected)return say('Select a part first');say('Grouping is planned for a future update; parts remain independently editable')};$('ungroup').onclick=()=>say('Select a grouped assembly to ungroup it');
 $('move').onclick=()=>{mode='move';$('modeBadge').textContent='MOVE';say('Move tool selected')};$('rotate').onclick=()=>{mode='rotate';$('modeBadge').textContent='ROTATE';say('Rotate tool selected')};$('scale').onclick=()=>{mode='scale';$('modeBadge').textContent='RESIZE';say('Resize tool selected')};$('home').onclick=()=>{camera.position.set(12,11,15);controls.target.set(0,1,0);controls.update()};$('grid').onclick=()=>{gridOn=!gridOn;grid.visible=gridOn;$('grid').textContent='Grid: '+(gridOn?'On':'Off')};$('measure').onclick=()=>{measure=!measure;say(measure?'Measure mode: select two parts to compare centers':'Measure mode off')};
 $('simulate').onclick=()=>{spinning=!spinning;$('simulate').textContent=spinning?'Ⅱ Stop test':'▶ Spin test';say(spinning?'Simple rotation test running':'Test paused')};
-$('save').onclick=()=>{localStorage.setItem('simuworld-kids-cad',JSON.stringify({objects:snapshot(),drawings:captureDrawings(),description:$('aiDescription').value}));say('Saved CAD model and four-view drawings in this browser')};
+$('save').onclick=()=>{localStorage.setItem('simuworld-kids-cad',JSON.stringify(createProjectData()));say('Saved plastic-only project, material assignments and four-view drawings in this browser')};
 function download(name,data,type){let blob=new Blob([data],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
-function exportProject(){download('simuworld-project.json',JSON.stringify({app:'SimuWorld',version:2,unitCalibration:{designUnitCm:10,stlExportUnit:'mm'},objects:snapshot(),drawings:captureDrawings(),description:$('aiDescription').value},null,2),'application/json');say('SimuWorld project exported')}
+function exportProject(){download('simuworld-project.json',JSON.stringify(createProjectData(),null,2),'application/json');say('SimuWorld plastic-only project exported')}
 $('exportProject').onclick=exportProject;
 $('open').onclick=()=>$('file').click();$('file').onchange=async e=>{try{let j=JSON.parse(await e.target.files[0].text());restore(j.objects||j);if(j.drawings)restoreDrawings(j.drawings);if(j.description!==undefined)$('aiDescription').value=j.description;say('SimuWorld project opened')}catch(err){say('Could not open that project file')}e.target.value=''};
 $('undo').onclick=()=>{if(!history.length)return say('Nothing to undo');future.push(snapshot());restore(history.pop())};$('redo').onclick=()=>{if(!future.length)return say('Nothing to redo');history.push(snapshot());restore(future.pop())};
@@ -287,8 +419,8 @@ let activeView='top',drawMode='draw',drawColor=$('drawColor').value,brushWidth=7
 let aiUndoStack=[],aiRedoStack=[],draftGrid=null,draftDims={nx:28,ny:18,nz:28},selectedStyle='preserve';
 const aiStyles=[
  {id:'preserve',name:'Preserve my shape',desc:'Keep the asymmetry and proportions from the drawings.',color:'#9a83ff',roughness:.42,flat:true},
- {id:'soft',name:'Softer surface look',desc:'A softer-looking material while keeping the same estimated shape.',color:'#54cbb5',roughness:.23,flat:false},
- {id:'engineering',name:'Engineering concept',desc:'A cool technical finish for inspecting the first draft.',color:'#afc7de',roughness:.34,flat:true}
+ {id:'soft',name:'Softer plastic finish',desc:'A softer-looking plastic finish; geometry remains unchanged.',color:'#54cbb5',roughness:.50,flat:false},
+ {id:'engineering',name:'Technical plastic',desc:'A neutral non-metallic plastic appearance for inspecting the draft.',color:'#afc7de',roughness:.55,flat:true}
 ];
 function setActiveView(id){activeView=id;document.querySelectorAll('.drawing-card').forEach(el=>el.classList.toggle('active',el.dataset.view===id))}
 function captureDrawings(){const out={};Object.keys(drawViews).forEach(k=>out[k]=drawViews[k].toDataURL('image/png'));return out}
@@ -381,9 +513,9 @@ function createAiModel(grid,styleId,dims){
  const style=aiStyles.find(s=>s.id===styleId)||aiStyles[0],color=new THREE.Color(style.color);
  let count=0;for(let i=0;i<data.length;i++)if(data[i])count++;
  if(!count){data=createDefaultGrid(nx,ny,nz)}
- const smooth=$('aiPolish').checked,mat=new THREE.MeshStandardMaterial({color:color,metalness:style.id==='engineering'?.62:.22,roughness:smooth?.2:style.roughness,flatShading:style.flat&&!smooth});
+ const smooth=$('aiPolish').checked,mat=new THREE.MeshStandardMaterial({color:color,metalness:0,roughness:smooth?.42:Math.max(.42,style.roughness),flatShading:style.flat&&!smooth});
  const geometry=createVoxelSurface(data,nx,ny,nz),mesh=new THREE.Mesh(geometry,mat);mesh.castShadow=true;mesh.receiveShadow=true;
- const g=new THREE.Group();g.add(mesh);g.position.set(0,1.7,0);g.userData={def:{id:'aiConcept',name:'Multi-view 3D Draft',desc:'Editable 3D volume estimated from your top, bottom, left and right drawings.'},color:style.color,ai:true,aiGrid:data,aiStyle:style.id,aiDims:{nx:nx,ny:ny,nz:nz}};return g;
+ const g=new THREE.Group();g.add(mesh);g.position.set(0,1.7,0);g.userData={def:{id:'aiConcept',name:'Multi-view 3D Draft',desc:'Approximate voxel-based volume estimated from the drawing outlines; not exact or parametric CAD.'},color:style.color,materialId:DEFAULT_PLASTIC,ai:true,aiGrid:data,aiStyle:style.id,aiDims:{nx:nx,ny:ny,nz:nz}};applyPlasticMaterialToGroup(g,DEFAULT_PLASTIC);return g;
 }
 function transformFourViews(){
  if(!draftGrid&&!analyzeFourViews())return;
@@ -394,10 +526,10 @@ function transformFourViews(){
 $('analyzeViews').onclick=analyzeFourViews;
 $('transform3d').onclick=transformFourViews;
 function activateStudio(name){
- const ids={kid:'cadWorkspace',exact:'exactWorkspace',ai:'aiWorkspace'};
+ const ids={kid:'cadWorkspace',exact:'exactWorkspace',ai:'aiWorkspace',engineering:'engineeringWorkspace'};
  Object.values(ids).forEach(id=>$(id).classList.remove('active'));
  $(ids[name]).classList.add('active');
- $('cadMode').classList.toggle('active',name==='kid');$('exactMode').classList.toggle('active',name==='exact');$('aiMode').classList.toggle('active',name==='ai');
+ $('cadMode').classList.toggle('active',name==='kid');$('exactMode').classList.toggle('active',name==='exact');$('aiMode').classList.toggle('active',name==='ai');$('engMode').classList.toggle('active',name==='engineering');
  if(name==='kid'||name==='exact'){host=$(name==='kid'?'view':'exactView');host.appendChild(renderer.domElement);if(name==='exact')$('exactModeBadge').textContent=mode.toUpperCase();requestAnimationFrame(()=>{resize();controls.update();syncExactInspector()})}
 }
 function transferAiModel(destination){
@@ -441,7 +573,7 @@ function createExtrusionFromData(p){
  if(p.plane==='XZ')geo.rotateX(Math.PI/2);else if(p.plane==='YZ')geo.rotateY(Math.PI/2);
  geo.computeVertexNormals();
  const mat=material(0x69bfff),solid=new THREE.Mesh(geo,mat);solid.castShadow=true;solid.receiveShadow=true;
- const g=new THREE.Group();g.add(solid);g.userData={def:{id:'customExtrude',name:(p.profile||'Profile')+' Extrusion '+(customFeatureCounter++),desc:'Extruded '+p.profile+' profile · '+p.depth+' mm depth'},color:'#69bfff',feature:{...p}};return g;
+ const g=new THREE.Group();g.add(solid);g.userData={def:{id:'customExtrude',name:(p.profile||'Profile')+' Extrusion '+(customFeatureCounter++),desc:'Extruded '+p.profile+' profile · '+p.depth+' mm depth'},color:'#69bfff',materialId:DEFAULT_PLASTIC,feature:{...p}};applyPlasticMaterialToGroup(g,DEFAULT_PLASTIC);return g;
 }
 function createExtrusion(){
  const p={profile:$('exactProfile').value,plane:$('exactPlane').value,width:Number($('profileWidth').value),height:Number($('profileHeight').value),depth:Number($('profileDepth').value),wall:Number($('profileWall').value)};
@@ -480,7 +612,7 @@ function syncExactInspector(){
  $('ex').value=(selected.position.x*100).toFixed(2);$('ey').value=(selected.position.y*100).toFixed(2);$('ez').value=(selected.position.z*100).toFixed(2);
  $('ew').value=(base.x*selected.scale.x*100).toFixed(2);$('eh').value=(base.y*selected.scale.y*100).toFixed(2);$('ed').value=(base.z*selected.scale.z*100).toFixed(2);
  $('erx').value=THREE.MathUtils.radToDeg(selected.rotation.x).toFixed(2);$('ery').value=THREE.MathUtils.radToDeg(selected.rotation.y).toFixed(2);$('erz').value=THREE.MathUtils.radToDeg(selected.rotation.z).toFixed(2);
- $('exactColor').value=selected.userData.color||'#4da8ff';
+ $('exactColor').value=selected.userData.color||'#4da8ff';$('exactPlasticMaterial').value=normalizePlasticId(selected.userData.materialId);
 }
 function applyExactInspector(){
  if(!selected)return say('Select a component before applying exact dimensions');
@@ -522,4 +654,133 @@ function end(){drag=null;controls.enabled=true}renderer.domElement.addEventListe
 function resize(){let w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h)}const viewportObserver=new ResizeObserver(resize);viewportObserver.observe($('view'));viewportObserver.observe($('exactView'));resize();
 try{let old=JSON.parse(localStorage.getItem('simuworld-kids-cad'));if(old){restore(old.objects||old);if(old.drawings)restoreDrawings(old.drawings);if(old.description!==undefined)$('aiDescription').value=old.description}}catch(e){}activateStudio('kid');
 function animate(){requestAnimationFrame(animate);controls.update();if(spinning)objects.forEach(o=>{o.rotation.y+=.012});renderer.render(scene,camera)}animate();
+
+function createProjectData(){
+ return {app:'SimuWorld',schemaVersion:3,plasticOnly:true,unitCalibration:{designUnitCm:10,stlExportUnit:'mm'},updatedAt:new Date().toISOString(),materials:PLASTIC_MATERIALS.map(m=>({id:m.id,name:m.name,densityEstimate_g_cm3:m.density,sourceNote:'Generic estimate only; verify exact grade datasheet'})),objects:snapshot(),drawings:captureDrawings(),description:$('aiDescription').value};
+}
+function populatePlasticSelects(){
+ ['plasticMaterial','exactPlasticMaterial','hubMaterial','calcMaterial'].forEach(id=>{
+  const el=$(id);if(!el)return;el.innerHTML='';
+  PLASTIC_MATERIALS.forEach(m=>{const op=document.createElement('option');op.value=m.id;op.textContent=m.name;el.appendChild(op)});
+  el.value=DEFAULT_PLASTIC;
+ });
+ const body=$('plasticMaterialRows');
+ if(body){body.innerHTML='';PLASTIC_MATERIALS.forEach(m=>{const tr=document.createElement('tr');[m.name,m.family,m.density.toFixed(2)+' g/cm³',m.use].forEach(value=>{const td=document.createElement('td');td.textContent=value;tr.appendChild(td)});body.appendChild(tr)})}
+}
+function showPlasticMaterial(id){
+ const m=getPlastic(id);$('hubMaterial').value=m.id;$('hubDensity').textContent=m.density.toFixed(2);
+ $('hubFamily').textContent=m.family;$('hubUse').textContent=m.use;
+ $('hubMaterialNote').textContent=m.note+' Use the selected manufacturer technical datasheet for final engineering calculations.';
+}
+function setEngineeringPage(page){
+ document.querySelectorAll('.eng-page').forEach(el=>el.classList.add('hidden'));
+ const target=$('engPage'+page.charAt(0).toUpperCase()+page.slice(1));if(target)target.classList.remove('hidden');
+ document.querySelectorAll('.eng-tab').forEach(el=>el.classList.toggle('active',el.dataset.engPage===page));
+}
+document.querySelectorAll('[data-eng-page]').forEach(el=>el.addEventListener('click',()=>setEngineeringPage(el.dataset.engPage)));
+$('engMode').onclick=()=>{refreshEngineeringOverview();activateStudio('engineering')};
+$('hubMaterial').onchange=e=>showPlasticMaterial(e.target.value);
+$('plasticMaterial').onchange=e=>assignPlasticMaterial(e.target.value);
+$('exactPlasticMaterial').onchange=e=>assignPlasticMaterial(e.target.value);
+$('applyHubMaterial').onclick=()=>assignPlasticMaterial($('hubMaterial').value);
+$('useHubMaterialForCalculator').onclick=()=>{$('calcMaterial').value=$('hubMaterial').value;setEngineeringPage('calculators')};
+populatePlasticSelects();showPlasticMaterial(DEFAULT_PLASTIC);
+function meshVolumeDesignUnits3(mesh){
+ const geometry=mesh.geometry,position=geometry&&geometry.getAttribute('position');if(!position||position.count<3)return 0;
+ mesh.updateWorldMatrix(true,false);
+ const index=geometry.getIndex(),count=index?index.count:position.count;let signed=0;
+ const a=new THREE.Vector3(),b=new THREE.Vector3(),c=new THREE.Vector3();
+ const va=new THREE.Vector3(),vb=new THREE.Vector3(),vc=new THREE.Vector3();
+ for(let i=0;i+2<count;i+=3){
+  const ia=index?index.getX(i):i,ib=index?index.getX(i+1):i+1,ic=index?index.getX(i+2):i+2;
+  va.fromBufferAttribute(position,ia).applyMatrix4(mesh.matrixWorld);
+  vb.fromBufferAttribute(position,ib).applyMatrix4(mesh.matrixWorld);
+  vc.fromBufferAttribute(position,ic).applyMatrix4(mesh.matrixWorld);
+  if(![va.x,va.y,va.z,vb.x,vb.y,vb.z,vc.x,vc.y,vc.z].every(Number.isFinite))return 0;
+  a.copy(vb).cross(vc);signed+=va.dot(a)/6;
+ }
+ return Math.abs(signed);
+}
+function estimateGroupVolumeCm3(group){
+ let total=0;group.updateWorldMatrix(true,true);group.traverse(node=>{if(node.isMesh)total+=meshVolumeDesignUnits3(node)});
+ return total*1000;
+}
+function refreshEngineeringOverview(){
+ if(!$('engPartCount'))return;
+ $('engPartCount').textContent=String(objects.length);$('engMaterialCount').textContent=String(PLASTIC_MATERIALS.length);
+ let totalMass=0,hasVolume=false;
+ objects.forEach(o=>{const volume=estimateGroupVolumeCm3(o),m=getPlastic(o.userData.materialId);if(volume>0){totalMass+=volume*m.density;hasVolume=true}});
+ $('engMassEstimate').textContent=hasVolume?totalMass.toFixed(1)+' g':'—';
+}
+function calculatePlasticMass(){
+ const volume=Number($('calcVolume').value),m=getPlastic($('calcMaterial').value);
+ if(!Number.isFinite(volume)||volume<0){$('massResult').textContent='Enter a valid non-negative volume.';return}
+ const grams=volume*m.density;$('massResult').textContent='Estimated mass: '+grams.toFixed(2)+' g ('+(grams/1000).toFixed(4)+' kg) using '+m.name+' at '+m.density.toFixed(2)+' g/cm³. Generic estimate only.';
+}
+$('calculateMass').onclick=calculatePlasticMass;
+$('useSelectedVolume').onclick=()=>{
+ if(!selected){$('massResult').textContent='Select a component in a CAD studio first.';return}
+ const volume=estimateGroupVolumeCm3(selected);
+ if(!(volume>0)){$('massResult').textContent='A closed-mesh volume estimate was not available for this selection.';return}
+ $('calcVolume').value=volume.toFixed(3);$('calcMaterial').value=normalizePlasticId(selected.userData.materialId);calculatePlasticMass();
+};
+$('calculateGear').onclick=()=>{
+ const driver=Number($('gearDriver').value),driven=Number($('gearDriven').value),rpm=Number($('gearInputRpm').value);
+ if(!Number.isInteger(driver)||!Number.isInteger(driven)||driver<=0||driven<=0||!Number.isFinite(rpm)||rpm<0){$('gearResult').textContent='Use positive whole-number tooth counts and a non-negative input RPM.';return}
+ const ratio=driven/driver,out=rpm/ratio;
+ $('gearResult').textContent='Reduction ratio: '+ratio.toFixed(3)+':1 · Output speed: '+out.toFixed(2)+' RPM · External gears rotate in opposite directions.';
+};
+$('calculateTolerance').onclick=()=>{
+ const vals=['tolA','tolB','tolC'].map(id=>Number($(id).value));
+ if(vals.some(v=>!Number.isFinite(v)||v<0)){$('toleranceResult').textContent='Enter non-negative tolerance values.';return}
+ const worst=vals.reduce((a,b)=>a+b,0),rss=Math.sqrt(vals.reduce((a,b)=>a+b*b,0));
+ $('toleranceResult').textContent='Worst-case total: ±'+worst.toFixed(3)+' mm · RSS estimate: ±'+rss.toFixed(3)+' mm. RSS depends on suitable statistical assumptions.';
+};
+function collectProjectAudit(){
+ const findings=[],errors=[],warnings=[];let meshCount=0;
+ objects.forEach((o,i)=>{
+  const label=o.userData?.def?.name||('Part '+(i+1));
+  if(!PLASTIC_MATERIALS.some(m=>m.id===o.userData.materialId))errors.push(label+': missing or invalid plastic material assignment.');
+  if(![o.position.x,o.position.y,o.position.z,o.rotation.x,o.rotation.y,o.rotation.z,o.scale.x,o.scale.y,o.scale.z].every(Number.isFinite))errors.push(label+': transform contains a non-finite value.');
+  if(Math.abs(o.scale.x)<1e-8||Math.abs(o.scale.y)<1e-8||Math.abs(o.scale.z)<1e-8)warnings.push(label+': one scale axis is zero or nearly zero.');
+  let partMeshes=0,invalid=0;
+  o.traverse(node=>{
+   if(!node.isMesh)return;partMeshes++;meshCount++;const attr=node.geometry&&node.geometry.getAttribute('position');
+   if(!attr||attr.count<3){invalid++;return}
+   for(let v=0;v<attr.count;v++){if(!Number.isFinite(attr.getX(v))||!Number.isFinite(attr.getY(v))||!Number.isFinite(attr.getZ(v))){invalid++;break}}
+  });
+  if(!partMeshes)errors.push(label+': no mesh geometry found.');
+  if(invalid)errors.push(label+': missing, incomplete or non-finite mesh vertex data.');
+ });
+ findings.push('Parts inspected: '+objects.length,'Mesh objects inspected: '+meshCount);
+ findings.push('All physical parts assigned a recognized plastic material: '+(errors.some(e=>e.includes('material assignment'))?'No':'Yes'));
+ findings.push('No missing mesh/transform data detected: '+(errors.length===0?'Yes':'No'));
+ return {findings,errors,warnings};
+}
+function renderAudit(result,title){
+ const list=$('engAuditList');list.innerHTML='';
+ [...result.findings,...result.errors.map(x=>'ERROR: '+x),...result.warnings.map(x=>'WARNING: '+x)].forEach(line=>{const li=document.createElement('li');li.textContent=line;list.appendChild(li)});
+ $('engAuditSummary').textContent=title+' · '+result.errors.length+' error(s) · '+result.warnings.length+' warning(s). These are project-level browser checks, not certification.';
+ $('engAuditStatus').textContent=result.errors.length?'Needs review':'Passed basic checks';
+}
+$('runProjectAudit').onclick=()=>renderAudit(collectProjectAudit(),'Project audit completed');
+function validateBuiltGroup(group){
+ let meshes=0,valid=true;group.updateMatrixWorld(true);
+ group.traverse(node=>{
+  if(!node.isMesh)return;meshes++;const attr=node.geometry&&node.geometry.getAttribute('position');
+  if(!attr||attr.count<3){valid=false;return}
+  for(let i=0;i<attr.count;i++)if(!Number.isFinite(attr.getX(i))||!Number.isFinite(attr.getY(i))||!Number.isFinite(attr.getZ(i))){valid=false;break}
+ });
+ const box=new THREE.Box3().setFromObject(group),size=box.getSize(new THREE.Vector3());
+ if(!meshes||!Number.isFinite(size.x)||!Number.isFinite(size.y)||!Number.isFinite(size.z)||size.length()===0)valid=false;
+ return {valid,meshes};
+}
+$('runEngineTests').onclick=()=>{
+ const passed=[],failed=[];
+ defs.forEach(d=>{try{const v=validateBuiltGroup(build(d));(v.valid?passed:failed).push(d.name+(v.valid?' · '+v.meshes+' mesh(es)':' · invalid mesh data'))}catch(err){failed.push(d.name+' · '+String(err.message||err))}});
+ ['rectangle','circle','triangle','hexagon','ring'].forEach(profile=>{try{const v=validateBuiltGroup(createExtrusionFromData({profile,plane:'XY',width:60,height:40,depth:12,wall:4}));(v.valid?passed:failed).push(profile+' extrusion'+(v.valid?' · mesh generated':' · invalid mesh data'))}catch(err){failed.push(profile+' extrusion · '+String(err.message||err))}});
+ renderAudit({findings:['Built-in component and extrusion tests passed: '+passed.length,'Tests failed: '+failed.length],errors:failed,warnings:['These are Three.js mesh-generation smoke tests only. No B-rep kernel, sketch constraint solver or manufacturing validation is tested.']},'Geometry smoke tests completed');
+};
+objects.forEach(o=>applyPlasticMaterialToGroup(o,o.userData.materialId));
+refreshEngineeringOverview();
 </script></body></html>
