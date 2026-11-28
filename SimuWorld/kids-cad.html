@@ -317,7 +317,16 @@ const defs=[
 { id:'pulley',name:'Pulley',emoji:'🛞',group:'mechanical',desc:'A grooved wheel for a belt.'},
 { id:'bracket',name:'Bracket',emoji:'📐',group:'mechanical',desc:'An L-shaped support.'},
 { id:'spring',name:'Spring',emoji:'🌀',group:'mechanical',desc:'A coil spring shape.'},
-{ id:'motor',name:'Motor housing',emoji:'🔋',group:'mechanical',desc:'A simple motor body and shaft.'}
+{ id:'motor',name:'Motor housing',emoji:'🔋',group:'mechanical',desc:'A simple motor body and shaft.'},
+{ id:'plasticNut',name:'Plastic hex nut',emoji:'⬡',group:'mechanical',desc:'A simple hexagonal plastic nut model with a center opening; thread geometry is not modeled.'},
+{ id:'plasticWasher',name:'Plastic washer',emoji:'⭕',group:'mechanical',desc:'A flat plastic ring spacer.'},
+{ id:'plasticScrew',name:'Plastic screw (smooth)',emoji:'➕',group:'mechanical',desc:'A smooth demonstration model of a plastic screw; thread geometry is not modeled.'},
+{ id:'plasticHinge',name:'Plastic hinge',emoji:'📎',group:'mechanical',desc:'A simple plastic hinge concept with leaves and pivot barrels.'},
+{ id:'plasticClip',name:'Plastic snap clip',emoji:'⌒',group:'mechanical',desc:'A simplified flexible C-clip concept; flexibility is not simulated.'},
+{ id:'plasticEnclosure',name:'Plastic enclosure',emoji:'▣',group:'mechanical',desc:'An open-top plastic electronics enclosure concept.'},
+{ id:'plasticRack',name:'Plastic gear rack',emoji:'▤',group:'mechanical',desc:'A simplified straight rack with repeated teeth.'},
+{ id:'plasticRoller',name:'Plastic roller',emoji:'◉',group:'mechanical',desc:'A cylindrical plastic roller with end rims.'},
+{ id:'plasticElbow',name:'Plastic elbow fitting',emoji:'↪',group:'mechanical',desc:'A simplified curved plastic pipe fitting concept.'}
 ];
 let objects=[],selected=null,mode='move',gridOn=true,spinning=false,measure=false,history=[],future=[];
 const PLASTIC_MATERIALS = [
@@ -379,6 +388,50 @@ case'pulley':mesh(group,new THREE.CylinderGeometry(.85,.85,.45,48),blue,[0,1,0])
 case'bracket':mesh(group,new THREE.BoxGeometry(2,.35,.5),orange,[0,.25,0]);mesh(group,new THREE.BoxGeometry(.35,1.7,.5),orange,[-.82,1,0]);for(let x of [-.75,.72])mesh(group,new THREE.CylinderGeometry(.12,.12,.12,24),dark,[x,.45,.28]);break;
 case'spring':{let pts=[];for(let i=0;i<=180;i++){let a=i/180*Math.PI*2*7;pts.push(new THREE.Vector3(Math.cos(a)*.55,i/180*2.4,Math.sin(a)*.55))}mesh(group,new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),360,.09,10,false),orange,[0,.15,0]);break}
 case'motor':mesh(group,new THREE.CylinderGeometry(.72,.72,1.8,48),blue,[0,1.1,0]).rotation.z=Math.PI/2;mesh(group,new THREE.CylinderGeometry(.13,.13,1.1,32),steel,[1.35,1.1,0]).rotation.z=Math.PI/2;mesh(group,new THREE.BoxGeometry(.6,.2,.6),dark,[-.2,2.08,0]);break;
+
+case'plasticNut':{
+ const shape=new THREE.Shape(),r=.88;
+ for(let i=0;i<6;i++){const a=Math.PI/6+i*Math.PI/3,x=Math.cos(a)*r,z=Math.sin(a)*r;if(i===0)shape.moveTo(x,z);else shape.lineTo(x,z)}
+ shape.closePath();const hole=new THREE.Path();hole.absarc(0,0,.34,0,Math.PI*2,true);shape.holes.push(hole);
+ const geo=new THREE.ExtrudeGeometry(shape,{depth:.38,bevelEnabled:false,curveSegments:32});geo.rotateX(-Math.PI/2);mesh(group,geo,mint,[0,.82,0]);break
+}
+case'plasticWasher':{
+ const shape=new THREE.Shape();shape.absarc(0,0,.88,0,Math.PI*2,false);const hole=new THREE.Path();hole.absarc(0,0,.38,0,Math.PI*2,true);shape.holes.push(hole);
+ const geo=new THREE.ExtrudeGeometry(shape,{depth:.12,bevelEnabled:false,curveSegments:48});geo.rotateX(-Math.PI/2);mesh(group,geo,mint,[0,.94,0]);break
+}
+case'plasticScrew':
+ mesh(group,new THREE.CylinderGeometry(.13,.13,1.35,32),blue,[0,.9,0]);
+ mesh(group,new THREE.CylinderGeometry(.34,.34,.24,32),mint,[0,1.65,0]);break;
+case'plasticHinge':
+ mesh(group,new THREE.BoxGeometry(.65,.12,.8),blue,[-.38,.55,0]);
+ mesh(group,new THREE.BoxGeometry(.65,.12,.8),mint,[.38,.55,0]);
+ mesh(group,new THREE.CylinderGeometry(.16,.16,1.0,24),orange,[0,.62,0]);
+ mesh(group,new THREE.CylinderGeometry(.19,.19,.28,24),orange,[0,.2,0]);
+ mesh(group,new THREE.CylinderGeometry(.19,.19,.28,24),orange,[0,1.05,0]);break;
+case'plasticClip':{
+ const pts=[];for(let i=0;i<=48;i++){const a=Math.PI*.18+i/(48)*Math.PI*1.64;pts.push(new THREE.Vector3(Math.cos(a)*.72,1,Math.sin(a)*.72))}
+ const curve=new THREE.CatmullRomCurve3(pts);mesh(group,new THREE.TubeGeometry(curve,96,.12,12,false),mint,[0,0,0]);break
+}
+case'plasticEnclosure':
+ mesh(group,new THREE.BoxGeometry(2.1,.16,1.55),blue,[0,.12,0]);
+ mesh(group,new THREE.BoxGeometry(2.1,.95,.14),mint,[0,.62,-.72]);
+ mesh(group,new THREE.BoxGeometry(2.1,.95,.14),mint,[0,.62,.72]);
+ mesh(group,new THREE.BoxGeometry(.14,.95,1.3),mint,[-.98,.62,0]);
+ mesh(group,new THREE.BoxGeometry(.14,.95,1.3),mint,[.98,.62,0]);break;
+case'plasticRack':{
+ mesh(group,new THREE.BoxGeometry(2.8,.22,.52),blue,[0,.45,0]);
+ for(let i=0;i<9;i++)mesh(group,new THREE.BoxGeometry(.22,.35,.52),mint,[-1.22+i*.305,.72,0]);break
+}
+case'plasticRoller':
+ mesh(group,new THREE.CylinderGeometry(.72,.72,1.9,48),blue,[0,1,0]);
+ mesh(group,new THREE.CylinderGeometry(.78,.78,.12,48),mint,[0,.12,0]);
+ mesh(group,new THREE.CylinderGeometry(.78,.78,.12,48),mint,[0,1.88,0]);break;
+case'plasticElbow':{
+ const curve=new THREE.CatmullRomCurve3([new THREE.Vector3(-.9,.45,0),new THREE.Vector3(-.55,.45,0),new THREE.Vector3(-.22,.55,0),new THREE.Vector3(0,.82,0),new THREE.Vector3(0,1.2,0)]);
+ mesh(group,new THREE.TubeGeometry(curve,48,.28,24,false),blue,[0,0,0]);
+ mesh(group,new THREE.TorusGeometry(.28,.035,10,36),mint,[-.9,.45,0]);
+ mesh(group,new THREE.TorusGeometry(.28,.035,10,36),mint,[0,1.2,0]);break
+}
 }
 group.userData.color=d.id==='gear'?'#ffc85a':d.id==='spring'?'#ff965c':d.id==='bearing'?'#aebdca':'#4da8ff';applyPlasticMaterialToGroup(group,DEFAULT_PLASTIC);return group}
 function updateModelTrees(){
